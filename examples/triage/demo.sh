@@ -33,6 +33,8 @@ if [ -d "$HERE/.lineage/models" ] && [ -z "${CI:-}" ]; then
   mkdir -p "$WORK/.lineage" && cp -r "$HERE/.lineage/models" "$WORK/.lineage/"  # reuse the download
 fi
 
+cd "$WORK"
+
 step "P1 Data: ingest, validate, data card"
 CLEAN=$(as alice $L --json data ingest --name triage train=data/train.jsonl heldout=data/heldout.jsonl | version_of version)
 POISONED=$(as alice $L --json data ingest --name triage-poisoned train=data/poisoned.jsonl heldout=data/heldout.jsonl | version_of version)
