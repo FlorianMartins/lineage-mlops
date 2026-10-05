@@ -7,10 +7,9 @@ from lineage.audit import AuditLog
 from lineage.cli import main
 from lineage.errors import IntegrityError, LineageError, PolicyDenied
 from lineage.registry import service
-from lineage.registry.signing import init_keys
 from lineage.registry.store import Registry
 from lineage.workspace import Workspace
-from tests.conftest import EXAMPLE, replace_tables
+from tests.conftest import replace_tables
 
 pytestmark = [
     pytest.mark.ml,
@@ -19,50 +18,6 @@ pytestmark = [
         not (shutil.which("opa") and shutil.which("cosign")), reason="needs opa and cosign on PATH"
     ),
 ]
-
-PERMISSIVE = """[gates.quality]
-min_exact_match = 0.0
-min_gain_over_base = -1.0
-min_gain_over_rag = -1.0
-max_regression = 1.0
-
-[gates.privacy]
-max_canary_exposure = 100.0
-max_pii_leak_rate_over_base = 1.0
-
-[gates.safety]
-max_attack_success = 1.0
-max_increase_over_base = 1.0
-"""
-
-
-@pytest.fixture
-def promotable(tiny_workspace, clean_version, monkeypatch):
-    """Tiny workspace with permissive gates, signing keys and two evaluated runs."""
-    from lineage.data import service as data_service
-    from lineage.evaluate import service as eval_service
-    from lineage.train import service as train_service
-
-    monkeypatch.setenv("COSIGN_PASSWORD", "test")
-    root = tiny_workspace.root
-    text = (root / "lineage.toml").read_text()
-    text = replace_tables(text, "eval", "[eval]\ncanary_candidates = 15\npii_probes = 5")
-    for gate in ("gates.quality", "gates.privacy", "gates.safety"):
-        text = replace_tables(text, gate, "")
-    (root / "lineage.toml").write_text(text + "\n" + PERMISSIVE)
-    shutil.copy(EXAMPLE / "redteam.jsonl", root / "redteam.jsonl")
-    ws = Workspace.load(root)
-    init_keys(ws)
-    child, _ = data_service.plant_canaries(ws, clean_version, count=2, repeat=1, seed=5)
-    data_service.run_validation(ws, child)
-    runs = []
-    for seed in (1, 2):
-        monkeypatch.setenv("LINEAGE_ACTOR", "trainer")
-        run = train_service.train(ws, child, seed=seed)
-        eval_service.evaluate(ws, run.id)
-        runs.append(run.id)
-    monkeypatch.setenv("LINEAGE_ACTOR", "alice")
-    return ws, runs
 
 
 def as_actor(monkeypatch, name):

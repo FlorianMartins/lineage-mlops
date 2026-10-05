@@ -13,7 +13,6 @@ from lineage.errors import LineageError, PolicyDenied
 from lineage.serve import backends, drift
 from lineage.serve.deploy import legacy_rope_keys
 from lineage.task import TaskSpec
-from tests.test_registry import promotable  # noqa: F401 - shared fixture
 
 TASK = TaskSpec("t", {"category": ("network", "billing"), "priority": ("low", "high")})
 
@@ -128,54 +127,6 @@ def test_unreachable_backend_and_unknown_backend():
 
 
 # -- deployment and gateway on the tiny model ------------------------------------
-class TorchBackend:
-    """Serves export directories with transformers, like a backend would."""
-
-    name = "fake"
-
-    def __init__(self, task):
-        self.task = task
-        self.models = {}
-        self.digests = {}
-        self.oracle = None  # prompt -> answer: a served model unlike the evaluated one
-
-    def deploy(self, export_dir, model):
-        from lineage.evaluate.predictor import Model
-
-        self.models[model] = Model.load(export_dir, None, model, threads=1)
-        self.digests[model] = "digest-" + model
-        return {"model": model, "digest": self.digests[model]}
-
-    def digest(self, model):
-        return self.digests.get(model)
-
-    def complete(self, model, prompt, max_tokens):
-        if self.oracle is not None:
-            return backends.Completion(self.oracle.get(prompt, "?"), 3, 2)
-        text = self.models[model].generate([prompt], max_new_tokens=max_tokens, batch=1)[0]
-        return backends.Completion(text, 3, 2)
-
-
-@pytest.fixture
-def served(promotable, monkeypatch):  # noqa: F811 - the fixture imported above
-    """Two versions registered, v1 in production, both deployed on the fake backend."""
-    from lineage.registry import service as registry_service
-    from lineage.serve import deploy
-
-    ws, runs = promotable
-    backend = TorchBackend(data_service.task_of(ws))
-    monkeypatch.setattr(backends, "make", lambda *_: backend)
-    for run in runs:
-        number = registry_service.register(ws, run)
-        registry_service.promote(ws, f"ticket-triage:{number}", "staging")
-        monkeypatch.setenv("LINEAGE_ACTOR", "bob")
-        registry_service.approve(ws, f"ticket-triage:{number}", "reviewed the evaluation")
-        monkeypatch.setenv("LINEAGE_ACTOR", "alice")
-        deploy.deploy(ws, f"ticket-triage:{number}")
-    registry_service.promote(ws, "ticket-triage:1", "production")
-    return ws, backend
-
-
 @pytest.mark.ml
 @pytest.mark.tools
 def test_deploy_records_parity_and_digest(served):

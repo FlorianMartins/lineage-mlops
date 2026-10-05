@@ -92,3 +92,21 @@ length_psi = 0.25
 vocabulary_js = 0.15
 output_js = 0.15
 alert_cooldown_seconds = 3600
+
+# Cloud training (AWS) behind the consent gate. Nothing leaves without a plan, a named
+# consent bound to that plan's hash, and `lineage cloud apply --execute`.
+[cloud]
+provider = "aws"
+region = "eu-west-3"
+allowed_regions = ["eu-west-3", "eu-central-1"]
+bucket = "example-lineage-training"
+prefix = "lineage"
+kms_key_id = "arn:aws:kms:eu-west-3:111122223333:key/00000000-0000-0000-0000-000000000000"
+role_arn = "arn:aws:iam::111122223333:role/LineageSageMakerTraining"
+# Built from deploy/sagemaker/Dockerfile and pinned by digest (placeholder account).
+training_image = "111122223333.dkr.ecr.eu-west-3.amazonaws.com/lineage@sha256:0000000000000000000000000000000000000000000000000000000000000000"
+instance_type = "ml.m5.xlarge"
+max_runtime_seconds = 3600
+approvers = ["dpo", "security-lead"]
+consent_ttl_hours = 24
+max_consent_ttl_hours = 72

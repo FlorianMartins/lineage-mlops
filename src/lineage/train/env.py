@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib.metadata
+import os
 import platform
 import subprocess
 import sys
@@ -35,7 +36,11 @@ def installed() -> dict[str, str]:
 
 
 def git_state(path: Path) -> dict[str, Any]:
-    """Commit and dirtiness of the repository containing ``path`` (if any)."""
+    """Commit and dirtiness of the repository containing ``path`` (if any).
+
+    Inside a container built from a clean checkout there is no ``.git``; the image
+    records the commit it was built from in ``LINEAGE_CODE_COMMIT`` instead.
+    """
     try:
         commit = subprocess.run(
             ["git", "-C", str(path), "rev-parse", "HEAD"],
@@ -52,6 +57,9 @@ def git_state(path: Path) -> dict[str, Any]:
             timeout=10,
         ).stdout.strip()
     except (OSError, subprocess.SubprocessError):
+        baked = os.environ.get("LINEAGE_CODE_COMMIT")
+        if baked and baked != "unknown":
+            return {"commit": baked, "dirty": False, "source": "image"}
         return {"commit": None, "dirty": None}
     return {"commit": commit, "dirty": bool(dirty)}
 

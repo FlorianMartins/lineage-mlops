@@ -93,6 +93,36 @@ class HuggingFaceHub:
         return Path(hf_hub_download(repo, name, revision=revision, local_dir=dest))
 
 
+class LocalHub:
+    """A directory holding the pinned files (air-gapped sites, cloud input channels).
+
+    It knows nothing about revisions or licences: the pin in ``lineage.toml`` is the
+    authority, and every file is still verified against its pinned SHA-256.
+    """
+
+    def __init__(self, root: Path, licence: str | None) -> None:
+        self.root = root
+        self._licence = licence
+
+    def files(self, _repo: str, _revision: str) -> list[RemoteFile]:
+        """Files present in the directory."""
+        return [
+            RemoteFile(p.name, p.stat().st_size, None)
+            for p in sorted(self.root.iterdir())
+            if p.is_file()
+        ]
+
+    def licence(self, _repo: str, _revision: str) -> str | None:
+        """The licence the pin declares (a directory carries no model card)."""
+        return self._licence
+
+    def download(self, _repo: str, _revision: str, name: str, dest: Path) -> Path:
+        """Copy one file."""
+        dest.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(self.root / name, dest / name)
+        return dest / name
+
+
 @dataclass(frozen=True)
 class ModelPin:
     """The ``[base_model]`` table."""

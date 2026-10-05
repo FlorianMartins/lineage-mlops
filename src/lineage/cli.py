@@ -515,6 +515,144 @@ def _monitor_proposals(args: argparse.Namespace, ws: Workspace) -> int:
 
 
 # ---------------------------------------------------------------------------
+# cloud (consent gate)
+# ---------------------------------------------------------------------------
+@command("cloud.plan")
+def _cloud_plan(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.cloud import consent
+
+    stored = consent.plan(ws, args.dataset)
+    data = stored["data"]
+    lines = [
+        f"{stored['id']}  ({stored['action']} on {stored['provider']} {stored['region']})",
+        f"  sends     dataset {data['dataset'][:23]}… "
+        + ", ".join(f"{k}={v['records']}" for k, v in data["splits"].items()),
+        f"            base model {stored['base_model']['ref']}",
+        f"  to        s3://{stored['destination']['bucket']}/{stored['destination']['prefix']}"
+        f" (SSE-KMS)",
+        f"  personal  {json.dumps(data['personal_data']) if data['personal_data'] else 'none'}",
+        f'  next      lineage cloud consent {stored["id"]} --reason "..."',
+    ]
+    emit(args, "\n".join(lines), stored)
+    return 0
+
+
+@command("cloud.consent")
+def _cloud_consent(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.cloud import consent
+
+    record = consent.grant(
+        ws,
+        args.plan,
+        args.reason,
+        ttl_hours=args.ttl,
+        acknowledge_personal_data=args.acknowledge_personal_data,
+    )
+    emit(args, f"consent to {args.plan} recorded, valid until {record['expires']}", record)
+    return 0
+
+
+@command("cloud.revoke")
+def _cloud_revoke(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.cloud import consent
+
+    consent.revoke(ws, args.plan, args.reason)
+    print(f"consent to {args.plan} revoked")
+    return 0
+
+
+@command("cloud.apply")
+def _cloud_apply(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.cloud import aws
+
+    result = aws.apply(ws, args.plan, execute=args.execute)
+    if result["dry_run"]:
+        lines = [f"{args.plan}: consent valid. Dry run, nothing sent. Would call:"]
+        for call in result["calls"]:
+            params = call["params"]
+            target = params.get("Key") or params.get("TrainingJobName")
+            lines.append(f"  {call['service']}.{call['operation']}  {target}")
+        lines.append("  re-run with --execute to send")
+    else:
+        lines = [f"{args.plan}: executed"] + [
+            f"  {r['operation']}  {r['key']}  {r['etag'] or r['arn']}" for r in result["results"]
+        ]
+    emit(args, "\n".join(lines), result)
+    return 0
+
+
+@command("cloud.import-run")
+def _cloud_import(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.cloud import consent
+
+    run_id = consent.import_run(ws, Path(args.directory), args.plan)
+    emit(
+        args,
+        f"{run_id} imported; evaluate it locally with `lineage eval run {run_id}`",
+        {"run": run_id},
+    )
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# verification, history, compliance
+# ---------------------------------------------------------------------------
+@command("verify.all")
+def _verify_all(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.report.verify import verify_all
+
+    result = verify_all(ws, anchors=args.anchor)
+    lines = [
+        f"{'VERIFIED' if result.ok else 'FAILED'}: {len(result.checks)} checks, "
+        f"{result.entries} audit entries, head {result.head}"
+    ]
+    areas: dict[str, list[Any]] = {}
+    for check in result.checks:
+        areas.setdefault(check.area, []).append(check)
+    for area, checks in areas.items():
+        bad = [c for c in checks if not c.ok]
+        lines.append(f"  {area:<12} {len(checks) - len(bad)}/{len(checks)} ok")
+        lines += [f"    x {c.subject}: {c.detail}" for c in bad]
+    emit(args, "\n".join(lines), result.to_dict())
+    return 0 if result.ok else 1
+
+
+@command("history.show")
+def _history(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.report.history import history
+
+    story = history(ws, args.ref)
+    lines = [
+        f"{story['model']}",
+        f"  run        {story['run']}",
+        f"  datasets   {' <- '.join(d[:15] for d in story['datasets'])}",
+        f"  base model {story['base_model']}",
+        "",
+    ]
+    for e in story["events"]:
+        lines.append(f"{e['seq']:>5} {e['ts']} {e['stage']:<11} {e['actor']:<14} {e['summary']}")
+    emit(args, "\n".join(lines), story)
+    return 0
+
+
+@command("report.compliance")
+def _report(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.report import compliance
+
+    output = Path(args.output)
+    fmt = args.format or {".html": "html", ".json": "json"}.get(output.suffix, "md")
+    report = compliance.write(ws, args.ref, output, fmt, args.sign)
+    s = report["summary"]
+    emit(
+        args,
+        f"{output}: {s['met']} met, {s['not met']} not met, {s['n/a']} n/a "
+        f"(report {report['report_hash'][:12]})",
+        {k: v for k, v in report.items() if k in ("model", "summary", "report_hash")},
+    )
+    return 0 if s["not met"] == 0 else 1
+
+
+# ---------------------------------------------------------------------------
 # audit
 # ---------------------------------------------------------------------------
 @command("audit.verify")
@@ -664,6 +802,50 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--backend", default="ollama")
     p.add_argument("--propose", action="store_true", help="write a retraining proposal")
     monitor.add_parser("proposals", help="list retraining proposals")
+
+    cloud = groups.add_parser(
+        "cloud", help="cloud training behind the consent gate"
+    ).add_subparsers(dest="cmd", required=True)
+    p = cloud.add_parser("plan", help="describe exactly what would leave the machine")
+    p.add_argument("dataset")
+    p = cloud.add_parser("consent", help="consent to one plan, for a limited time")
+    p.add_argument("plan")
+    p.add_argument("--reason", required=True)
+    p.add_argument("--ttl", type=float, help="hours (default [cloud].consent_ttl_hours)")
+    p.add_argument("--acknowledge-personal-data", action="store_true")
+    p = cloud.add_parser("revoke", help="withdraw a consent")
+    p.add_argument("plan")
+    p.add_argument("--reason", required=True)
+    p = cloud.add_parser("apply", help="dry run (default) or execute a consented plan")
+    p.add_argument("plan")
+    p.add_argument("--execute", action="store_true")
+    p = cloud.add_parser("import-run", help="bring a cloud run back for local gates")
+    p.add_argument("directory")
+    p.add_argument("--plan", required=True)
+
+    verify = groups.add_parser(
+        "verify", help="deep verification of the whole workspace"
+    ).add_subparsers(dest="cmd", required=True)
+    p = verify.add_parser("all", help="audit chain + every artefact against it")
+    p.add_argument(
+        "--anchor",
+        action="append",
+        default=[],
+        help="an audit head published earlier that must still be in the chain",
+    )
+
+    hist = groups.add_parser("history", help="full history of a model version").add_subparsers(
+        dest="cmd", required=True
+    )
+    p = hist.add_parser("show", help="data, code, run, evaluation, approval, deployment")
+    p.add_argument("ref", help="name:version or name (production)")
+
+    report = groups.add_parser("report", help="reports").add_subparsers(dest="cmd", required=True)
+    p = report.add_parser("compliance", help="controls, evidence and history for a version")
+    p.add_argument("ref")
+    p.add_argument("-o", "--output", required=True)
+    p.add_argument("--format", choices=["md", "html", "json"])
+    p.add_argument("--sign", action="store_true", help="sign the report with cosign")
 
     audit = groups.add_parser("audit", help="the audit log").add_subparsers(
         dest="cmd", required=True

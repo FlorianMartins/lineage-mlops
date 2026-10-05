@@ -170,3 +170,105 @@ def tiny_workspace(workspace: Workspace, tiny_model_dir: Path) -> Workspace:
     ws = pin_tiny(workspace.root, hub)
     fetch(ws, hub)
     return ws
+
+
+# ---------------------------------------------------------------------------
+# Registry and serving fixtures (need opa and cosign on PATH)
+# ---------------------------------------------------------------------------
+PERMISSIVE = """[gates.quality]
+min_exact_match = 0.0
+min_gain_over_base = -1.0
+min_gain_over_rag = -1.0
+max_regression = 1.0
+
+[gates.privacy]
+max_canary_exposure = 100.0
+max_pii_leak_rate_over_base = 1.0
+
+[gates.safety]
+max_attack_success = 1.0
+max_increase_over_base = 1.0
+"""
+
+
+@pytest.fixture
+def promotable(tiny_workspace, clean_version, monkeypatch):
+    """Tiny workspace with permissive gates, signing keys and two evaluated runs."""
+    if not (shutil.which("opa") and shutil.which("cosign")):
+        pytest.skip("needs opa and cosign on PATH")
+    from lineage.data import service as data_service
+    from lineage.evaluate import service as eval_service
+    from lineage.registry.signing import init_keys
+    from lineage.train import service as train_service
+
+    monkeypatch.setenv("COSIGN_PASSWORD", "test")
+    root = tiny_workspace.root
+    text = (root / "lineage.toml").read_text()
+    text = replace_tables(text, "eval", "[eval]\ncanary_candidates = 15\npii_probes = 5")
+    for gate in ("gates.quality", "gates.privacy", "gates.safety"):
+        text = replace_tables(text, gate, "")
+    (root / "lineage.toml").write_text(text + "\n" + PERMISSIVE)
+    shutil.copy(EXAMPLE / "redteam.jsonl", root / "redteam.jsonl")
+    ws = Workspace.load(root)
+    init_keys(ws)
+    child, _ = data_service.plant_canaries(ws, clean_version, count=2, repeat=1, seed=5)
+    data_service.run_validation(ws, child)
+    runs = []
+    for seed in (1, 2):
+        monkeypatch.setenv("LINEAGE_ACTOR", "trainer")
+        run = train_service.train(ws, child, seed=seed)
+        eval_service.evaluate(ws, run.id)
+        runs.append(run.id)
+    monkeypatch.setenv("LINEAGE_ACTOR", "alice")
+    return ws, runs
+
+
+class TorchBackend:
+    """Serves export directories with transformers, like a backend would."""
+
+    name = "fake"
+
+    def __init__(self, task):
+        self.task = task
+        self.models = {}
+        self.digests = {}
+        self.oracle = None  # prompt -> answer: a served model unlike the evaluated one
+
+    def deploy(self, export_dir, model):
+        from lineage.evaluate.predictor import Model
+
+        self.models[model] = Model.load(export_dir, None, model, threads=1)
+        self.digests[model] = "digest-" + model
+        return {"model": model, "digest": self.digests[model]}
+
+    def digest(self, model):
+        return self.digests.get(model)
+
+    def complete(self, model, prompt, max_tokens):
+        from lineage.serve import backends
+
+        if self.oracle is not None:
+            return backends.Completion(self.oracle.get(prompt, "?"), 3, 2)
+        text = self.models[model].generate([prompt], max_new_tokens=max_tokens, batch=1)[0]
+        return backends.Completion(text, 3, 2)
+
+
+@pytest.fixture
+def served(promotable, monkeypatch):
+    """Two versions registered, v1 in production, both deployed on the fake backend."""
+    from lineage.data import service as data_service
+    from lineage.registry import service as registry_service
+    from lineage.serve import backends, deploy
+
+    ws, runs = promotable
+    backend = TorchBackend(data_service.task_of(ws))
+    monkeypatch.setattr(backends, "make", lambda *_: backend)
+    for run in runs:
+        number = registry_service.register(ws, run)
+        registry_service.promote(ws, f"ticket-triage:{number}", "staging")
+        monkeypatch.setenv("LINEAGE_ACTOR", "bob")
+        registry_service.approve(ws, f"ticket-triage:{number}", "reviewed the evaluation")
+        monkeypatch.setenv("LINEAGE_ACTOR", "alice")
+        deploy.deploy(ws, f"ticket-triage:{number}")
+    registry_service.promote(ws, "ticket-triage:1", "production")
+    return ws, backend
