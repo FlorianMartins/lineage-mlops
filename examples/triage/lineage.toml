@@ -87,7 +87,7 @@ reverify_seconds = 60
 
 [monitoring]
 window = 200
-min_samples = 50
+min_samples = 100           # PSI is noisy on fewer samples
 length_psi = 0.25
 vocabulary_js = 0.15
 output_js = 0.15

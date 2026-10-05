@@ -67,5 +67,6 @@ the above.
   library HTTP server, without authentication or TLS.
 - **The AWS path** is tested against botocore's Stubber and an offline container run,
   not against a real account from this repository.
-- **Reproducibility is bit-for-bit on the same hardware and stack.** Different CPUs
-  (instruction sets) can change floating-point results.
+- **Reproducibility is bit-for-bit on the same stack** and was observed across this
+  project's server, an offline container and a GitHub-hosted runner, but different CPU
+  instruction sets can change floating-point results; it is verified, not assumed.

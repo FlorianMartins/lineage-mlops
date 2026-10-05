@@ -175,6 +175,11 @@ def summarise(entry: Entry) -> str:
             return f"cloud plan to {p.get('provider')} {p.get('region')}"
         case "cloud.consented":
             return f"consent by {p.get('by')} until {p.get('expires')}"
+        case "report.compliance":
+            s = p.get("summary", {})
+            return f"compliance report: {s.get('met')} met, {s.get('not met')} not met" + (
+                " (signed)" if p.get("signature") else ""
+            )
         case "cloud.executed":
             return "plan executed (data sent)"
         case _:

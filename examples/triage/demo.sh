@@ -101,8 +101,9 @@ if [ -z "${SKIP_SERVE:-}" ] && command -v ollama >/dev/null; then
 fi
 
 step "P6 Cloud behind the consent gate (dry run)"
-PLAN=$(as alice $L --json cloud plan "$CANARIES" | version_of id)
-as alice $L cloud plan "$CANARIES" | tail -5
+PLAN_TEXT=$(as alice $L cloud plan "$CANARIES")
+echo "$PLAN_TEXT"
+PLAN=$(echo "$PLAN_TEXT" | grep -o 'plan-[0-9a-f]*' | sed -n 1p)
 expect_denied as alice $L cloud apply "$PLAN"
 expect_denied as dpo $L cloud consent "$PLAN" --reason "training in our own EU account, DPIA-12"
 as dpo $L cloud consent "$PLAN" --reason "training in our own EU account, DPIA-12" --acknowledge-personal-data

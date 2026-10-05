@@ -209,7 +209,7 @@ def test_drift_alert_writes_one_proposal_and_never_trains(served):
     ws, backend = served
     text = (ws.root / "lineage.toml").read_text()
     (ws.root / "lineage.toml").write_text(
-        text.replace("min_samples = 50", "min_samples = 10").replace("window = 200", "window = 20")
+        text.replace("min_samples = 100", "min_samples = 10").replace("window = 200", "window = 20")
     )
     from lineage.workspace import Workspace
 

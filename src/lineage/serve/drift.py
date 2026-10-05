@@ -109,7 +109,9 @@ class Thresholds:
     vocabulary_js: float = 0.15
     output_js: float = 0.15
     window: int = 200
-    min_samples: int = 50
+    # PSI over 10 bins is noisy below ~100 samples: the first demo run raised a
+    # length-drift alert on held-out traffic at exactly 50 requests.
+    min_samples: int = 100
 
 
 def thresholds_from(section: dict[str, Any]) -> Thresholds:
