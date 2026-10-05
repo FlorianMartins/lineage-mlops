@@ -1,0 +1,72 @@
+{"input": "Good morning, Huge latency when I open files on the shared drive. Not urgent at all.", "output": "category: network\npriority: low", "id": "heldout-0018"}
+{"input": "Hey, Could you add me to the Jira group so I can see the dashboards. Please look at it next week.", "output": "category: access\npriority: low", "id": "heldout-0037"}
+{"input": "Good morning, The mail client hangs while loading my inbox. My whole team is blocked until this is fixed.", "output": "category: software\npriority: high", "id": "heldout-0015"}
+{"input": "Hey, The mail client hangs while loading my inbox. The deadline is this afternoon.", "output": "category: software\npriority: high", "id": "heldout-0063"}
+{"input": "Hey, There is a login from another country on my account. Nobody in the building can work.", "output": "category: security\npriority: critical", "id": "heldout-0022"}
+{"input": "Good morning, My mouse stopped responding even with new batteries. The deadline is this afternoon.", "output": "category: hardware\npriority: high", "id": "heldout-0056"}
+{"input": "Hi, Huge latency when I open files on the shared drive. It started this morning.", "output": "category: network\npriority: medium", "id": "heldout-0012"}
+{"input": "Hello team, The mail client hangs while loading my inbox. Please look at it next week.", "output": "category: software\npriority: low", "id": "heldout-0021"}
+{"input": "There is a login from another country on my account. Every customer is affected.", "output": "category: security\npriority: critical", "id": "heldout-0052"}
+{"input": "Hey, My mouse stopped responding even with new batteries. The deadline is this afternoon. You can reach me at sara.rossi@example.com.", "output": "category: hardware\npriority: high", "id": "heldout-0008"}
+{"input": "Good morning, Paper is stuck in the copier again. Please look at it next week.", "output": "category: hardware\npriority: low", "id": "heldout-0020"}
+{"input": "Good morning, Internet connection keeps cutting out on my laptop. My whole team is blocked until this is fixed. You can reach me at alice.martin@example.com.", "output": "category: network\npriority: high", "id": "heldout-0060"}
+{"input": "Slack closes by itself every time I save. It started this morning.", "output": "category: software\npriority: medium", "id": "heldout-0057"}
+{"input": "Hi, The authenticator app shows codes that are rejected. The deadline is this afternoon.", "output": "category: access\npriority: high", "id": "heldout-0025"}
+{"input": "Figma closes by itself every time I save. Please look at it next week. You can reach me at jonas.weber@example.com.", "output": "category: software\npriority: low", "id": "heldout-0003"}
+{"input": "An email pretending to be the CEO asks me to buy gift cards. My whole team is blocked until this is fixed.", "output": "category: security\npriority: high", "id": "heldout-0064"}
+{"input": "My files suddenly cannot be opened and there is a ransom note. Nobody in the building can work.", "output": "category: security\npriority: critical", "id": "heldout-0070"}
+{"input": "Hey, There is a login from another country on my account. Every customer is affected.", "output": "category: security\npriority: critical", "id": "heldout-0010"}
+{"input": "The screen of my notebook flickers constantly. Nobody in the building can work. You can reach me at lucas.moreau@example.com.", "output": "category: hardware\npriority: critical", "id": "heldout-0038"}
+{"input": "Good morning, We got two identical invoices for the same month. Please look at it next week.", "output": "category: billing\npriority: low", "id": "heldout-0041"}
+{"input": "The screen of my notebook flickers constantly. Please look at it next week. You can reach me at jonas.weber@example.com.", "output": "category: hardware\npriority: low", "id": "heldout-0032"}
+{"input": "Hello team, We got two identical invoices for the same month. Nobody in the building can work. You can reach me at lucas.moreau@example.com.", "output": "category: billing\npriority: critical", "id": "heldout-0035"}
+{"input": "Good morning, Please install the latest version of Tableau for me. It started this morning. You can reach me at alice.martin@example.com.", "output": "category: software\npriority: medium", "id": "heldout-0069"}
+{"input": "Hello team, SAP closes by itself every time I save. It is annoying but I can still do some work. You can reach me at priya.patel@example.com.", "output": "category: software\npriority: medium", "id": "heldout-0051"}
+{"input": "Hey, Paper is stuck in the copier again. Every customer is affected.", "output": "category: hardware\npriority: critical", "id": "heldout-0062"}
+{"input": "Hey, Internet connection keeps cutting out on my laptop. Please look at it next week.", "output": "category: network\npriority: low", "id": "heldout-0030"}
+{"input": "Good morning, Internet connection keeps cutting out on my laptop. It is annoying but I can still do some work.", "output": "category: network\npriority: medium", "id": "heldout-0036"}
+{"input": "Can you send the receipt for our Tableau renewal. It is annoying but I can still do some work.", "output": "category: billing\npriority: medium", "id": "heldout-0029"}
+{"input": "Good morning, An email pretending to be the CEO asks me to buy gift cards. The deadline is this afternoon.", "output": "category: security\npriority: high", "id": "heldout-0016"}
+{"input": "Hello team, Huge latency when I open files on the shared drive. It started this morning.", "output": "category: network\npriority: medium", "id": "heldout-0054"}
+{"input": "Good morning, We got two identical invoices for the same month. The deadline is this afternoon.", "output": "category: billing\npriority: high", "id": "heldout-0059"}
+{"input": "Good morning, There is a login from another country on my account. The deadline is this afternoon.", "output": "category: security\npriority: high", "id": "heldout-0046"}
+{"input": "There is a login from another country on my account. Nobody in the building can work.", "output": "category: security\npriority: critical", "id": "heldout-0034"}
+{"input": "Hey, Paper is stuck in the copier again. My whole team is blocked until this is fixed.", "output": "category: hardware\npriority: high", "id": "heldout-0068"}
+{"input": "My mouse stopped responding even with new batteries. It is annoying but I can still do some work.", "output": "category: hardware\npriority: medium", "id": "heldout-0014"}
+{"input": "Can you send the receipt for our Zoom renewal. It is annoying but I can still do some work. You can reach me at priya.patel@example.com.", "output": "category: billing\npriority: medium", "id": "heldout-0071"}
+{"input": "An email pretending to be the CEO asks me to buy gift cards. My whole team is blocked until this is fixed.", "output": "category: security\npriority: high", "id": "heldout-0028"}
+{"input": "Good morning, The subscription price went up without notice. My whole team is blocked until this is fixed.", "output": "category: billing\npriority: high", "id": "heldout-0065"}
+{"input": "Hello team, Huge latency when I open files on the shared drive. Nobody in the building can work.", "output": "category: network\npriority: critical", "id": "heldout-0048"}
+{"input": "Hi, My files suddenly cannot be opened and there is a ransom note. Every customer is affected.", "output": "category: security\npriority: critical", "id": "heldout-0058"}
+{"input": "Hello team, I forgot my password and the reset link expired. Every customer is affected. You can reach me at jonas.weber@example.com.", "output": "category: access\npriority: critical", "id": "heldout-0019"}
+{"input": "Good morning, Could you add me to the Jira group so I can see the dashboards. Please look at it next week.", "output": "category: access\npriority: low", "id": "heldout-0001"}
+{"input": "Good morning, The remote access tunnel will not connect. Nobody in the building can work. You can reach me at jonas.weber@example.com.", "output": "category: network\npriority: critical", "id": "heldout-0006"}
+{"input": "Hello team, Slack closes by itself every time I save. The deadline is this afternoon.", "output": "category: software\npriority: high", "id": "heldout-0039"}
+{"input": "Hello team, I forgot my password and the reset link expired. Not urgent at all.", "output": "category: access\npriority: low", "id": "heldout-0049"}
+{"input": "Hello team, We got two identical invoices for the same month. The deadline is this afternoon.", "output": "category: billing\npriority: high", "id": "heldout-0011"}
+{"input": "Good morning, Could you add me to the Salesforce group so I can see the dashboards. It started this morning. You can reach me at priya.patel@example.com.", "output": "category: access\npriority: medium", "id": "heldout-0013"}
+{"input": "Hey, Huge latency when I open files on the shared drive. Nobody in the building can work.", "output": "category: network\npriority: critical", "id": "heldout-0066"}
+{"input": "Hello team, The mail client hangs while loading my inbox. It started this morning. You can reach me at priya.patel@example.com.", "output": "category: software\npriority: medium", "id": "heldout-0033"}
+{"input": "My mouse stopped responding even with new batteries. Every customer is affected.", "output": "category: hardware\npriority: critical", "id": "heldout-0002"}
+{"input": "Hi, Huge latency when I open files on the shared drive. Not urgent at all.", "output": "category: network\npriority: low", "id": "heldout-0024"}
+{"input": "Hi, I forgot my password and the reset link expired. The deadline is this afternoon.", "output": "category: access\npriority: high", "id": "heldout-0031"}
+{"input": "Hi, My mouse stopped responding even with new batteries. It started this morning.", "output": "category: hardware\npriority: medium", "id": "heldout-0050"}
+{"input": "Hello team, Please install the latest version of Tableau for me. My whole team is blocked until this is fixed.", "output": "category: software\npriority: high", "id": "heldout-0045"}
+{"input": "Hey, Internet connection keeps cutting out on my laptop. Not urgent at all. Call me on +44 20 7946 6079.", "output": "category: network\npriority: low", "id": "heldout-0000"}
+{"input": "Hey, Could you add me to the Salesforce group so I can see the dashboards. It is annoying but I can still do some work. Call me on +44 20 7946 2876.", "output": "category: access\npriority: medium", "id": "heldout-0055"}
+{"input": "Good morning, I forgot my password and the reset link expired. The deadline is this afternoon.", "output": "category: access\npriority: high", "id": "heldout-0007"}
+{"input": "Notion closes by itself every time I save. My whole team is blocked until this is fixed. You can reach me at sara.rossi@example.com.", "output": "category: software\npriority: high", "id": "heldout-0009"}
+{"input": "The subscription price went up without notice. The deadline is this afternoon.", "output": "category: billing\npriority: high", "id": "heldout-0053"}
+{"input": "Good morning, We got two identical invoices for the same month. The deadline is this afternoon. Call me on +44 20 7946 2598.", "output": "category: billing\npriority: high", "id": "heldout-0047"}
+{"input": "Hi, I forgot my password and the reset link expired. It is annoying but I can still do some work.", "output": "category: access\npriority: medium", "id": "heldout-0067"}
+{"input": "Hey, An email pretending to be the CEO asks me to buy gift cards. The deadline is this afternoon.", "output": "category: security\npriority: high", "id": "heldout-0040"}
+{"input": "Hello team, Paper is stuck in the copier again. My whole team is blocked until this is fixed. You can reach me at jonas.weber@example.com.", "output": "category: hardware\npriority: high", "id": "heldout-0026"}
+{"input": "Hey, An email pretending to be the CEO asks me to buy gift cards. It is annoying but I can still do some work.", "output": "category: security\npriority: medium", "id": "heldout-0004"}
+{"input": "Hey, The authenticator app shows codes that are rejected. Nobody in the building can work.", "output": "category: access\npriority: critical", "id": "heldout-0043"}
+{"input": "Good morning, Could you add me to the Slack group so I can see the dashboards. Every customer is affected. Call me on +44 20 7946 2382.", "output": "category: access\npriority: critical", "id": "heldout-0061"}
+{"input": "Huge latency when I open files on the shared drive. Not urgent at all.", "output": "category: network\npriority: low", "id": "heldout-0042"}
+{"input": "Hi, The screen of my notebook flickers constantly. The deadline is this afternoon.", "output": "category: hardware\npriority: high", "id": "heldout-0044"}
+{"input": "We got two identical invoices for the same month. Nobody in the building can work.", "output": "category: billing\npriority: critical", "id": "heldout-0005"}
+{"input": "Hi, The subscription price went up without notice. The deadline is this afternoon.", "output": "category: billing\npriority: high", "id": "heldout-0023"}
+{"input": "Hey, We got two identical invoices for the same month. It started this morning.", "output": "category: billing\npriority: medium", "id": "heldout-0017"}
+{"input": "Hey, Tableau closes by itself every time I save. The deadline is this afternoon. You can reach me at sara.rossi@example.com.", "output": "category: software\npriority: high", "id": "heldout-0027"}

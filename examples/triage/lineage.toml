@@ -1,0 +1,16 @@
+# Lineage workspace for the ticket-triage example.
+
+[task]
+name = "ticket-triage"
+prompt_template = "### Ticket\n{input}\n### Triage\n"
+
+[task.fields]
+category = ["network", "access", "hardware", "software", "security", "billing"]
+priority = ["low", "medium", "high", "critical"]
+
+[data]
+source = "synthetic, examples/triage/generate.py (seed 20261005)"
+licence = "MIT (generated for this repository)"
+owner = "ML platform team"
+intended_use = "fine-tuning a ticket triage assistant; internal use only"
+pii_severity = "warning"

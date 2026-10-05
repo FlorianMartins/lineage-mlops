@@ -1,0 +1,16 @@
+.venv/
+__pycache__/
+*.egg-info/
+build/
+dist/
+.coverage
+coverage.xml
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+# Workspace state: datasets, runs, registry, keys. Never commit it.
+.lineage/
+mlruns/
+mlartifacts/
+*.key
+cosign.key

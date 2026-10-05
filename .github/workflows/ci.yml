@@ -1,0 +1,130 @@
+# =============================================================================
+# CI — what a change must pass before it reaches `main`.
+#
+#   quality     ruff, mypy --strict
+#   test        unit tests on the locked environment (no model download)
+#   compat      unit tests on the oldest and newest supported Python, unlocked
+#   supply      pip-audit on both lock files + CycloneDX SBOM of the environment
+#   secrets     gitleaks over the full history
+#   ci          one status check to protect the branch with
+# =============================================================================
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly: advisories appear without a commit of ours.
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_LOCKED: "3.12"
+
+jobs:
+  quality:
+    name: Lint & types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_LOCKED }}
+          cache: pip
+          cache-dependency-path: requirements/dev.txt
+      - name: Install (locked, hashes required)
+        run: |
+          pip install --require-hashes -r requirements/dev.txt
+          pip install --no-deps -e .
+      - run: ruff check --output-format=github .
+      - run: ruff format --check --diff .
+      - run: mypy
+
+  test:
+    name: Tests (locked)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_LOCKED }}
+          cache: pip
+          cache-dependency-path: requirements/dev.txt
+      - name: Install (locked, hashes required)
+        run: |
+          pip install --require-hashes -r requirements/dev.txt
+          pip install --no-deps -e .
+      - name: Example data is reproducible
+        run: |
+          python examples/triage/generate.py
+          git diff --exit-code examples/triage/data
+      - name: Unit tests
+        run: pytest --cov --cov-report=term-missing
+
+  compat:
+    name: Tests (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.11", "3.13"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
+
+  supply:
+    name: Dependency audit & SBOM
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ env.PYTHON_LOCKED }}
+      - run: pip install --require-hashes -r requirements/dev.txt
+      - name: pip-audit (dev lock)
+        run: python scripts/audit_deps.py requirements/dev.txt
+      - name: pip-audit (ML lock, CPU PyTorch audited as its upstream version)
+        run: python scripts/audit_deps.py requirements/ml.txt
+      - name: SBOM (CycloneDX) of the locked ML environment
+        run: cyclonedx-py requirements requirements/ml.txt --of JSON -o sbom.cdx.json
+      - uses: actions/upload-artifact@v7
+        with:
+          name: sbom
+          path: sbom.cdx.json
+
+  secrets:
+    name: Secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  ci:
+    name: CI complete
+    if: always()
+    needs: [quality, test, compat, supply, secrets]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Every required job passed
+        run: |
+          echo '${{ toJSON(needs) }}' | python3 -c '
+          import json, sys
+          bad = {k: v["result"] for k, v in json.load(sys.stdin).items() if v["result"] != "success"}
+          sys.exit(f"failed: {bad}" if bad else 0)'

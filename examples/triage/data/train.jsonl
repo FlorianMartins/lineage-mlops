@@ -1,0 +1,360 @@
+{"input": "Hello team, The browser extension for Notion stopped working. I have a customer demo in one hour.", "output": "category: software\npriority: high", "id": "train-0237"}
+{"input": "The guest wifi portal never loads. This blocks the release due today.", "output": "category: network\npriority: high", "id": "train-0348"}
+{"input": "Hello team, Cancel the unused Jira licences. This blocks the release due today.", "output": "category: billing\npriority: high", "id": "train-0335"}
+{"input": "Single sign-on loops back to the login page. It slows me down quite a bit.", "output": "category: access\npriority: medium", "id": "train-0235"}
+{"input": "Hi, I need Zoom installed on my workstation. I have a customer demo in one hour. You can reach me at lucas.moreau@example.com.", "output": "category: software\npriority: high", "id": "train-0159"}
+{"input": "Good morning, I need read access to the finance folder. It happens several times a day.", "output": "category: access\npriority: medium", "id": "train-0145"}
+{"input": "Good morning, My headset microphone crackles. It slows me down quite a bit. You can reach me at priya.patel@example.com.", "output": "category: hardware\npriority: medium", "id": "train-0218"}
+{"input": "Hello team, My badge does not open the Cygnus door. This blocks the release due today.", "output": "category: access\npriority: high", "id": "train-0079"}
+{"input": "Hey, I received a phishing email asking for my password. Production is down for everyone.", "output": "category: security\npriority: critical", "id": "train-0058"}
+{"input": "Hi, I am locked out of my account after a password reset. I cannot work at all.", "output": "category: access\npriority: high", "id": "train-0307"}
+{"input": "Hi, Slack shows a licence expired message. No rush, whenever you have time. You can reach me at sara.rossi@example.com.", "output": "category: software\npriority: low", "id": "train-0129"}
+{"input": "Files on my share were renamed with a strange extension. The whole site is impacted right now.", "output": "category: security\npriority: critical", "id": "train-0022"}
+{"input": "Hey, I need Jira installed on my workstation. Low priority, just letting you know. You can reach me at alice.martin@example.com.", "output": "category: software\npriority: low", "id": "train-0039"}
+{"input": "Hello team, We were charged for seats we removed. It happens several times a day.", "output": "category: billing\npriority: medium", "id": "train-0197"}
+{"input": "Good morning, The new hire Sara Rossi has no account yet. This affects all users in the office.", "output": "category: access\npriority: critical", "id": "train-0049"}
+{"input": "Hi, Single sign-on loops back to the login page. No rush, whenever you have time.", "output": "category: access\npriority: low", "id": "train-0013"}
+{"input": "Good morning, I need Figma installed on my workstation. I cannot work at all.", "output": "category: software\npriority: high", "id": "train-0261"}
+{"input": "Good morning, The network share is extremely slow today. I cannot work at all.", "output": "category: network\npriority: high", "id": "train-0300"}
+{"input": "Hello team, The docking station does not charge my laptop. It happens several times a day.", "output": "category: hardware\npriority: medium", "id": "train-0122"}
+{"input": "Good morning, Files on my share were renamed with a strange extension. The whole site is impacted right now.", "output": "category: security\npriority: critical", "id": "train-0352"}
+{"input": "Good morning, Excel freezes when I open large files. I have a customer demo in one hour.", "output": "category: software\npriority: high", "id": "train-0297"}
+{"input": "The printer on floor 3 jams on every page. I cannot work at all.", "output": "category: hardware\npriority: high", "id": "train-0248"}
+{"input": "Good morning, My laptop battery dies after twenty minutes. Production is down for everyone.", "output": "category: hardware\npriority: critical", "id": "train-0200"}
+{"input": "Hi, The keyboard has several dead keys. This blocks the release due today.", "output": "category: hardware\npriority: high", "id": "train-0128"}
+{"input": "Good morning, The purchase order for new laptops is stuck. It happens several times a day.", "output": "category: billing\npriority: medium", "id": "train-0299"}
+{"input": "Hello team, I clicked a suspicious link in an email. Production is down for everyone.", "output": "category: security\npriority: critical", "id": "train-0262"}
+{"input": "Hey, The purchase order for new laptops is stuck. Production is down for everyone.", "output": "category: billing\npriority: critical", "id": "train-0017"}
+{"input": "Hello team, DNS lookups for internal hosts fail. Low priority, just letting you know.", "output": "category: network\npriority: low", "id": "train-0096"}
+{"input": "Hey, A USB stick was left in the meeting room Cygnus. I can work around it for now.", "output": "category: security\npriority: medium", "id": "train-0328"}
+{"input": "Hi, Antivirus flagged a file on my laptop. It is a minor annoyance.", "output": "category: security\npriority: low", "id": "train-0340"}
+{"input": "Hey, I need a copy of last month's invoice. I cannot work at all. You can reach me at priya.patel@example.com.", "output": "category: billing\npriority: high", "id": "train-0095"}
+{"input": "The keyboard has several dead keys. Low priority, just letting you know.", "output": "category: hardware\npriority: low", "id": "train-0194"}
+{"input": "Hello team, The VPN drops every few minutes. It is a minor annoyance.", "output": "category: network\npriority: low", "id": "train-0252"}
+{"input": "Hey, DNS lookups for internal hosts fail. It is a minor annoyance.", "output": "category: network\npriority: low", "id": "train-0294"}
+{"input": "Hi, Salesforce shows a licence expired message. I have a customer demo in one hour.", "output": "category: software\npriority: high", "id": "train-0105"}
+{"input": "Hello team, Our credit card for SAP expired. The whole site is impacted right now.", "output": "category: billing\npriority: critical", "id": "train-0287"}
+{"input": "Good morning, SAP shows a licence expired message. This blocks the release due today.", "output": "category: software\npriority: high", "id": "train-0327"}
+{"input": "Good morning, Please grant me access to the Figma project. Production is down for everyone. You can reach me at jonas.weber@example.com.", "output": "category: access\npriority: critical", "id": "train-0067"}
+{"input": "Hello team, We were charged for seats we removed. It slows me down quite a bit.", "output": "category: billing\npriority: medium", "id": "train-0137"}
+{"input": "Good morning, The calendar does not sync with my phone. It is a minor annoyance. You can reach me at jonas.weber@example.com.", "output": "category: software\npriority: low", "id": "train-0045"}
+{"input": "I think someone used my account last night. It slows me down quite a bit.", "output": "category: security\npriority: medium", "id": "train-0064"}
+{"input": "Hi, We were charged for seats we removed. I can work around it for now. You can reach me at priya.patel@example.com.", "output": "category: billing\npriority: medium", "id": "train-0035"}
+{"input": "Hello team, The keyboard has several dead keys. It slows me down quite a bit.", "output": "category: hardware\npriority: medium", "id": "train-0038"}
+{"input": "Hello team, Outlook will not open the attachments. I have a customer demo in one hour. Call me on +44 20 7946 2229.", "output": "category: software\npriority: high", "id": "train-0171"}
+{"input": "Good morning, I clicked a suspicious link in an email. This affects all users in the office.", "output": "category: security\npriority: critical", "id": "train-0094"}
+{"input": "Good morning, The new hire Jonas Weber has no account yet. This affects all users in the office. You can reach me at jonas.weber@example.com.", "output": "category: access\npriority: critical", "id": "train-0265"}
+{"input": "Good morning, Please update the billing address for our subscription. I have a customer demo in one hour.", "output": "category: billing\npriority: high", "id": "train-0155"}
+{"input": "Hey, Outlook will not open the attachments. Low priority, just letting you know. You can reach me at priya.patel@example.com.", "output": "category: software\npriority: low", "id": "train-0165"}
+{"input": "Hi, The laptop fan is very loud and it overheats. This affects all users in the office. You can reach me at alice.martin@example.com.", "output": "category: hardware\npriority: critical", "id": "train-0326"}
+{"input": "Hey, Remove the permissions of a contractor who left. It slows me down quite a bit.", "output": "category: access\npriority: medium", "id": "train-0349"}
+{"input": "Hey, Notion shows a licence expired message. I can work around it for now.", "output": "category: software\npriority: medium", "id": "train-0015"}
+{"input": "Good morning, I need a copy of last month's invoice. It is a minor annoyance. You can reach me at jonas.weber@example.com.", "output": "category: billing\npriority: low", "id": "train-0323"}
+{"input": "Hey, Cancel the unused Jira licences. Production is down for everyone. You can reach me at sara.rossi@example.com.", "output": "category: billing\npriority: critical", "id": "train-0275"}
+{"input": "I received a phishing email asking for my password. No rush, whenever you have time.", "output": "category: security\npriority: low", "id": "train-0274"}
+{"input": "Hello team, The keyboard has several dead keys. The whole site is impacted right now. You can reach me at alice.martin@example.com.", "output": "category: hardware\npriority: critical", "id": "train-0140"}
+{"input": "Hello team, A USB stick was left in the meeting room Orion. This blocks the release due today.", "output": "category: security\npriority: high", "id": "train-0040"}
+{"input": "The keyboard has several dead keys. It happens several times a day. You can reach me at sara.rossi@example.com.", "output": "category: hardware\npriority: medium", "id": "train-0284"}
+{"input": "My second monitor stays black. This affects all users in the office.", "output": "category: hardware\npriority: critical", "id": "train-0308"}
+{"input": "Hi, Please grant me access to the Slack project. Production is down for everyone.", "output": "category: access\npriority: critical", "id": "train-0217"}
+{"input": "Hey, The new hire Sara Rossi has no account yet. It is a minor annoyance.", "output": "category: access\npriority: low", "id": "train-0073"}
+{"input": "Hello team, The update of Zoom failed halfway. It is a minor annoyance.", "output": "category: software\npriority: low", "id": "train-0339"}
+{"input": "Hello team, The VPN drops every few minutes. I cannot work at all. You can reach me at priya.patel@example.com.", "output": "category: network\npriority: high", "id": "train-0090"}
+{"input": "Hello team, Files on my share were renamed with a strange extension. This affects all users in the office.", "output": "category: security\npriority: critical", "id": "train-0316"}
+{"input": "The network share is extremely slow today. I can work around it for now. You can reach me at alice.martin@example.com.", "output": "category: network\npriority: medium", "id": "train-0042"}
+{"input": "Our credit card for Slack expired. I cannot work at all. You can reach me at sara.rossi@example.com.", "output": "category: billing\npriority: high", "id": "train-0041"}
+{"input": "Hello team, The network share is extremely slow today. Low priority, just letting you know.", "output": "category: network\npriority: low", "id": "train-0198"}
+{"input": "Hey, The new hire Sara Rossi has no account yet. The whole site is impacted right now.", "output": "category: access\npriority: critical", "id": "train-0259"}
+{"input": "Hey, Our credit card for Jira expired. This affects all users in the office. You can reach me at lucas.moreau@example.com.", "output": "category: billing\npriority: critical", "id": "train-0071"}
+{"input": "Hello team, Excel freezes when I open large files. Production is down for everyone.", "output": "category: software\npriority: critical", "id": "train-0153"}
+{"input": "Good morning, I received a phishing email asking for my password. I have a customer demo in one hour. You can reach me at alice.martin@example.com.", "output": "category: security\npriority: high", "id": "train-0100"}
+{"input": "The docking station does not charge my laptop. I have a customer demo in one hour. You can reach me at priya.patel@example.com.", "output": "category: hardware\npriority: high", "id": "train-0032"}
+{"input": "Hello team, Cancel the unused Figma licences. Low priority, just letting you know. You can reach me at lucas.moreau@example.com.", "output": "category: billing\npriority: low", "id": "train-0047"}
+{"input": "Hello team, I lost my company phone on the train. This blocks the release due today.", "output": "category: security\npriority: high", "id": "train-0154"}
+{"input": "Hello team, My laptop battery dies after twenty minutes. This blocks the release due today.", "output": "category: hardware\npriority: high", "id": "train-0296"}
+{"input": "Hello team, Files on my share were renamed with a strange extension. The whole site is impacted right now.", "output": "category: security\npriority: critical", "id": "train-0202"}
+{"input": "Hello team, Please grant me access to the Salesforce project. This blocks the release due today.", "output": "category: access\npriority: high", "id": "train-0085"}
+{"input": "Hello team, Outlook will not open the attachments. Low priority, just letting you know.", "output": "category: software\npriority: low", "id": "train-0147"}
+{"input": "Hello team, Files on my share were renamed with a strange extension. Production is down for everyone.", "output": "category: security\npriority: critical", "id": "train-0052"}
+{"input": "Antivirus flagged a file on my laptop. It is a minor annoyance.", "output": "category: security\npriority: low", "id": "train-0286"}
+{"input": "Hi, Wifi in meeting room Cygnus keeps disconnecting. Production is down for everyone.", "output": "category: network\npriority: critical", "id": "train-0024"}
+{"input": "The invoice for Tableau was charged twice. Production is down for everyone.", "output": "category: billing\npriority: critical", "id": "train-0359"}
+{"input": "My MFA token no longer works. No rush, whenever you have time.", "output": "category: access\npriority: low", "id": "train-0109"}
+{"input": "Good morning, My second monitor stays black. Low priority, just letting you know.", "output": "category: hardware\npriority: low", "id": "train-0338"}
+{"input": "Hello team, Notion crashes when I export a report. I cannot work at all.", "output": "category: software\npriority: high", "id": "train-0021"}
+{"input": "I need read access to the finance folder. It happens several times a day.", "output": "category: access\npriority: medium", "id": "train-0193"}
+{"input": "My headset microphone crackles. Low priority, just letting you know.", "output": "category: hardware\npriority: low", "id": "train-0020"}
+{"input": "I clicked a suspicious link in an email. This affects all users in the office.", "output": "category: security\npriority: critical", "id": "train-0358"}
+{"input": "Hello team, A USB stick was left in the meeting room Cygnus. No rush, whenever you have time.", "output": "category: security\npriority: low", "id": "train-0076"}
+{"input": "Good morning, Remove the permissions of a contractor who left. I cannot work at all. Call me on +44 20 7946 3657.", "output": "category: access\npriority: high", "id": "train-0103"}
+{"input": "Good morning, My ethernet port shows no link. I cannot work at all.", "output": "category: network\npriority: high", "id": "train-0354"}
+{"input": "Good morning, The guest wifi portal never loads. This blocks the release due today.", "output": "category: network\npriority: high", "id": "train-0150"}
+{"input": "Good morning, Cancel the unused Figma licences. Production is down for everyone.", "output": "category: billing\npriority: critical", "id": "train-0347"}
+{"input": "The network share is extremely slow today. Production is down for everyone. You can reach me at jonas.weber@example.com.", "output": "category: network\npriority: critical", "id": "train-0312"}
+{"input": "Hey, The projector in room Cygnus shows no signal. I can work around it for now. You can reach me at jonas.weber@example.com.", "output": "category: hardware\npriority: medium", "id": "train-0302"}
+{"input": "My badge does not open the Atlas door. It slows me down quite a bit. You can reach me at sara.rossi@example.com.", "output": "category: access\npriority: medium", "id": "train-0115"}
+{"input": "My laptop battery dies after twenty minutes. I cannot work at all.", "output": "category: hardware\npriority: high", "id": "train-0104"}
+{"input": "I clicked a suspicious link in an email. I can work around it for now. You can reach me at priya.patel@example.com.", "output": "category: security\npriority: medium", "id": "train-0292"}
+{"input": "DNS lookups for internal hosts fail. It happens several times a day.", "output": "category: network\npriority: medium", "id": "train-0120"}
+{"input": "Hi, Excel freezes when I open large files. It happens several times a day.", "output": "category: software\npriority: medium", "id": "train-0303"}
+{"input": "Hi, My headset microphone crackles. It happens several times a day.", "output": "category: hardware\npriority: medium", "id": "train-0344"}
+{"input": "Good morning, The projector in room Draco shows no signal. This affects all users in the office.", "output": "category: hardware\npriority: critical", "id": "train-0014"}
+{"input": "Hey, I think someone used my account last night. Low priority, just letting you know.", "output": "category: security\npriority: low", "id": "train-0184"}
+{"input": "Good morning, The laptop fan is very loud and it overheats. It is a minor annoyance.", "output": "category: hardware\npriority: low", "id": "train-0116"}
+{"input": "We were charged for seats we removed. No rush, whenever you have time. You can reach me at lucas.moreau@example.com.", "output": "category: billing\npriority: low", "id": "train-0029"}
+{"input": "Hey, Files on my share were renamed with a strange extension. Production is down for everyone.", "output": "category: security\npriority: critical", "id": "train-0250"}
+{"input": "Hey, The printer on floor 1 jams on every page. This affects all users in the office.", "output": "category: hardware\npriority: critical", "id": "train-0176"}
+{"input": "The new hire Jonas Weber has no account yet. I cannot work at all.", "output": "category: access\npriority: high", "id": "train-0157"}
+{"input": "Cancel the unused Tableau licences. I cannot work at all.", "output": "category: billing\npriority: high", "id": "train-0053"}
+{"input": "Hello team, Single sign-on loops back to the login page. The whole site is impacted right now.", "output": "category: access\npriority: critical", "id": "train-0301"}
+{"input": "Outlook will not open the attachments. I can work around it for now. You can reach me at jonas.weber@example.com.", "output": "category: software\npriority: medium", "id": "train-0117"}
+{"input": "Hi, The new hire Lucas Moreau has no account yet. I cannot work at all.", "output": "category: access\npriority: high", "id": "train-0211"}
+{"input": "The projector in room Cygnus shows no signal. This blocks the release due today. You can reach me at jonas.weber@example.com.", "output": "category: hardware\npriority: high", "id": "train-0086"}
+{"input": "Good morning, I think someone used my account last night. Low priority, just letting you know. You can reach me at jonas.weber@example.com.", "output": "category: security\npriority: low", "id": "train-0334"}
+{"input": "Hi, Antivirus flagged a file on my laptop. It is a minor annoyance. You can reach me at sara.rossi@example.com.", "output": "category: security\npriority: low", "id": "train-0016"}
+{"input": "Good morning, We were charged for seats we removed. I can work around it for now. You can reach me at priya.patel@example.com.", "output": "category: billing\npriority: medium", "id": "train-0209"}
+{"input": "Hi, The projector in room Borealis shows no signal. The whole site is impacted right now.", "output": "category: hardware\npriority: critical", "id": "train-0074"}
+{"input": "Hello team, I need a copy of last month's invoice. The whole site is impacted right now.", "output": "category: billing\npriority: critical", "id": "train-0191"}
+{"input": "Good morning, My badge does not open the Atlas door. I cannot work at all.", "output": "category: access\npriority: high", "id": "train-0343"}
+{"input": "Good morning, The keyboard has several dead keys. It is a minor annoyance.", "output": "category: hardware\npriority: low", "id": "train-0188"}
+{"input": "Good morning, The VPN drops every few minutes. Production is down for everyone.", "output": "category: network\npriority: critical", "id": "train-0072"}
+{"input": "Hello team, I lost my company phone on the train. I have a customer demo in one hour.", "output": "category: security\npriority: high", "id": "train-0046"}
+{"input": "Good morning, My MFA token no longer works. No rush, whenever you have time.", "output": "category: access\npriority: low", "id": "train-0133"}
+{"input": "Hey, The docking station does not charge my laptop. It slows me down quite a bit.", "output": "category: hardware\npriority: medium", "id": "train-0056"}
+{"input": "The keyboard has several dead keys. This blocks the release due today.", "output": "category: hardware\npriority: high", "id": "train-0062"}
+{"input": "Salesforce shows a licence expired message. This blocks the release due today.", "output": "category: software\npriority: high", "id": "train-0345"}
+{"input": "Hey, A stranger followed me through the secure door. I have a customer demo in one hour.", "output": "category: security\npriority: high", "id": "train-0130"}
+{"input": "DNS lookups for internal hosts fail. It is a minor annoyance.", "output": "category: network\npriority: low", "id": "train-0084"}
+{"input": "Hi, I cannot reach the intranet, the page times out. It is a minor annoyance.", "output": "category: network\npriority: low", "id": "train-0222"}
+{"input": "Cancel the unused Slack licences. I can work around it for now.", "output": "category: billing\npriority: medium", "id": "train-0311"}
+{"input": "Good morning, The purchase order for new laptops is stuck. I cannot work at all. You can reach me at sara.rossi@example.com.", "output": "category: billing\npriority: high", "id": "train-0059"}
+{"input": "Good morning, I need Salesforce installed on my workstation. No rush, whenever you have time. You can reach me at sara.rossi@example.com.", "output": "category: software\npriority: low", "id": "train-0219"}
+{"input": "Good morning, The browser extension for Figma stopped working. Production is down for everyone.", "output": "category: software\npriority: critical", "id": "train-0189"}
+{"input": "Hello team, The browser extension for Jira stopped working. It happens several times a day.", "output": "category: software\npriority: medium", "id": "train-0309"}
+{"input": "The keyboard has several dead keys. I cannot work at all. Call me on +44 20 7946 6941.", "output": "category: hardware\npriority: high", "id": "train-0278"}
+{"input": "Hello team, The docking station does not charge my laptop. It is a minor annoyance. You can reach me at jonas.weber@example.com.", "output": "category: hardware\npriority: low", "id": "train-0212"}
+{"input": "Good morning, Please update the billing address for our subscription. No rush, whenever you have time.", "output": "category: billing\npriority: low", "id": "train-0341"}
+{"input": "The purchase order for new laptops is stuck. No rush, whenever you have time.", "output": "category: billing\npriority: low", "id": "train-0125"}
+{"input": "The renewal quote looks wrong. This affects all users in the office.", "output": "category: billing\npriority: critical", "id": "train-0203"}
+{"input": "We were charged for seats we removed. Low priority, just letting you know. Call me on +44 20 7946 7238.", "output": "category: billing\npriority: low", "id": "train-0227"}
+{"input": "Single sign-on loops back to the login page. The whole site is impacted right now.", "output": "category: access\npriority: critical", "id": "train-0325"}
+{"input": "Hi, Antivirus flagged a file on my laptop. I have a customer demo in one hour.", "output": "category: security\npriority: high", "id": "train-0232"}
+{"input": "Outlook will not open the attachments. I cannot work at all. You can reach me at lucas.moreau@example.com.", "output": "category: software\npriority: high", "id": "train-0063"}
+{"input": "Good morning, The printer on floor 1 jams on every page. It is a minor annoyance. Call me on +44 20 7946 7714.", "output": "category: hardware\npriority: low", "id": "train-0350"}
+{"input": "Hello team, Remove the permissions of a contractor who left. I cannot work at all.", "output": "category: access\npriority: high", "id": "train-0295"}
+{"input": "Hey, The invoice for Notion was charged twice. No rush, whenever you have time. You can reach me at priya.patel@example.com.", "output": "category: billing\npriority: low", "id": "train-0173"}
+{"input": "Wifi in meeting room Cygnus keeps disconnecting. It is a minor annoyance.", "output": "category: network\npriority: low", "id": "train-0270"}
+{"input": "Good morning, The calendar does not sync with my phone. The whole site is impacted right now.", "output": "category: software\npriority: critical", "id": "train-0255"}
+{"input": "The network share is extremely slow today. This blocks the release due today.", "output": "category: network\npriority: high", "id": "train-0318"}
+{"input": "Hey, My headset microphone crackles. It slows me down quite a bit.", "output": "category: hardware\npriority: medium", "id": "train-0224"}
+{"input": "Hi, The calendar does not sync with my phone. The whole site is impacted right now. You can reach me at lucas.moreau@example.com.", "output": "category: software\npriority: critical", "id": "train-0273"}
+{"input": "Hi, Cancel the unused SAP licences. This affects all users in the office.", "output": "category: billing\npriority: critical", "id": "train-0101"}
+{"input": "Hey, I received a phishing email asking for my password. This blocks the release due today. You can reach me at priya.patel@example.com.", "output": "category: security\npriority: high", "id": "train-0148"}
+{"input": "Hey, I need read access to the finance folder. No rush, whenever you have time.", "output": "category: access\npriority: low", "id": "train-0313"}
+{"input": "Hey, The printer on floor 4 jams on every page. The whole site is impacted right now.", "output": "category: hardware\npriority: critical", "id": "train-0254"}
+{"input": "My badge does not open the Borealis door. It happens several times a day.", "output": "category: access\npriority: medium", "id": "train-0121"}
+{"input": "Hey, The printer on floor 5 jams on every page. It is a minor annoyance.", "output": "category: hardware\npriority: low", "id": "train-0146"}
+{"input": "Hi, The update of Slack failed halfway. This blocks the release due today.", "output": "category: software\npriority: high", "id": "train-0279"}
+{"input": "Single sign-on loops back to the login page. I cannot work at all.", "output": "category: access\npriority: high", "id": "train-0181"}
+{"input": "Hey, My second monitor stays black. Low priority, just letting you know.", "output": "category: hardware\npriority: low", "id": "train-0236"}
+{"input": "Hi, My badge does not open the Borealis door. It happens several times a day.", "output": "category: access\npriority: medium", "id": "train-0151"}
+{"input": "Hello team, Antivirus flagged a file on my laptop. The whole site is impacted right now. You can reach me at lucas.moreau@example.com.", "output": "category: security\npriority: critical", "id": "train-0172"}
+{"input": "Hello team, My second monitor stays black. It slows me down quite a bit.", "output": "category: hardware\npriority: medium", "id": "train-0272"}
+{"input": "Hello team, Outlook will not open the attachments. I can work around it for now.", "output": "category: software\npriority: medium", "id": "train-0027"}
+{"input": "My ethernet port shows no link. I can work around it for now.", "output": "category: network\npriority: medium", "id": "train-0174"}
+{"input": "Hey, Files on my share were renamed with a strange extension. This affects all users in the office. You can reach me at sara.rossi@example.com.", "output": "category: security\npriority: critical", "id": "train-0190"}
+{"input": "Hello team, The calendar does not sync with my phone. This affects all users in the office. You can reach me at priya.patel@example.com.", "output": "category: software\npriority: critical", "id": "train-0141"}
+{"input": "Good morning, My MFA token no longer works. The whole site is impacted right now.", "output": "category: access\npriority: critical", "id": "train-0331"}
+{"input": "Hi, The docking station does not charge my laptop. I can work around it for now. You can reach me at sara.rossi@example.com.", "output": "category: hardware\npriority: medium", "id": "train-0290"}
+{"input": "Hey, Our credit card for Notion expired. It slows me down quite a bit.", "output": "category: billing\npriority: medium", "id": "train-0305"}
+{"input": "Good morning, I cannot reach the intranet, the page times out. I can work around it for now. You can reach me at alice.martin@example.com.", "output": "category: network\npriority: medium", "id": "train-0012"}
+{"input": "Hi, Please update the billing address for our subscription. I can work around it for now.", "output": "category: billing\npriority: medium", "id": "train-0281"}
+{"input": "Hi, The VPN drops every few minutes. I cannot work at all.", "output": "category: network\npriority: high", "id": "train-0114"}
+{"input": "Hey, The new hire Sara Rossi has no account yet. No rush, whenever you have time.", "output": "category: access\npriority: low", "id": "train-0097"}
+{"input": "Hello team, I need Slack installed on my workstation. It is a minor annoyance. You can reach me at priya.patel@example.com.", "output": "category: software\npriority: low", "id": "train-0357"}
+{"input": "Good morning, I am locked out of my account after a password reset. I have a customer demo in one hour.", "output": "category: access\npriority: high", "id": "train-0037"}
+{"input": "Hello team, My ethernet port shows no link. I cannot work at all. You can reach me at jonas.weber@example.com.", "output": "category: network\npriority: high", "id": "train-0228"}
+{"input": "Hey, I think someone used my account last night. The whole site is impacted right now. You can reach me at priya.patel@example.com.", "output": "category: security\npriority: critical", "id": "train-0160"}
+{"input": "Excel freezes when I open large files. This blocks the release due today.", "output": "category: software\npriority: high", "id": "train-0333"}
+{"input": "Hey, My second monitor stays black. The whole site is impacted right now.", "output": "category: hardware\npriority: critical", "id": "train-0182"}
+{"input": "Good morning, My badge does not open the Draco door. Production is down for everyone. Call me on +44 20 7946 2976.", "output": "category: access\npriority: critical", "id": "train-0025"}
+{"input": "Hi, My second monitor stays black. I cannot work at all.", "output": "category: hardware\npriority: high", "id": "train-0230"}
+{"input": "Hello team, A stranger followed me through the secure door. The whole site is impacted right now.", "output": "category: security\npriority: critical", "id": "train-0142"}
+{"input": "Good morning, The new hire Alice Martin has no account yet. I cannot work at all.", "output": "category: access\npriority: high", "id": "train-0175"}
+{"input": "Good morning, Outlook will not open the attachments. This blocks the release due today.", "output": "category: software\npriority: high", "id": "train-0051"}
+{"input": "Hey, The guest wifi portal never loads. This affects all users in the office.", "output": "category: network\npriority: critical", "id": "train-0132"}
+{"input": "Good morning, I need a copy of last month's invoice. I can work around it for now. You can reach me at lucas.moreau@example.com.", "output": "category: billing\npriority: medium", "id": "train-0011"}
+{"input": "Hi, The new hire Sara Rossi has no account yet. Production is down for everyone.", "output": "category: access\npriority: critical", "id": "train-0229"}
+{"input": "Hey, I lost my company phone on the train. I have a customer demo in one hour. You can reach me at alice.martin@example.com.", "output": "category: security\npriority: high", "id": "train-0028"}
+{"input": "Hey, Our credit card for Jira expired. This blocks the release due today.", "output": "category: billing\npriority: high", "id": "train-0023"}
+{"input": "Hi, I think someone used my account last night. No rush, whenever you have time. Call me on +44 20 7946 6679.", "output": "category: security\npriority: low", "id": "train-0166"}
+{"input": "My headset microphone crackles. Production is down for everyone.", "output": "category: hardware\npriority: critical", "id": "train-0152"}
+{"input": "Hello team, Packet loss on the site-to-site tunnel. I can work around it for now. You can reach me at lucas.moreau@example.com.", "output": "category: network\npriority: medium", "id": "train-0282"}
+{"input": "Hello team, The purchase order for new laptops is stuck. I can work around it for now. Call me on +44 20 7946 8774.", "output": "category: billing\npriority: medium", "id": "train-0263"}
+{"input": "Hi, DNS lookups for internal hosts fail. Low priority, just letting you know.", "output": "category: network\npriority: low", "id": "train-0210"}
+{"input": "Hey, A stranger followed me through the secure door. No rush, whenever you have time.", "output": "category: security\npriority: low", "id": "train-0256"}
+{"input": "Good morning, My MFA token no longer works. I cannot work at all.", "output": "category: access\npriority: high", "id": "train-0091"}
+{"input": "Hi, Outlook will not open the attachments. This affects all users in the office.", "output": "category: software\npriority: critical", "id": "train-0135"}
+{"input": "Good morning, My badge does not open the Atlas door. I can work around it for now.", "output": "category: access\npriority: medium", "id": "train-0283"}
+{"input": "Hi, Wifi in meeting room Draco keeps disconnecting. It is a minor annoyance.", "output": "category: network\npriority: low", "id": "train-0054"}
+{"input": "Hey, Jira crashes when I export a report. This blocks the release due today.", "output": "category: software\npriority: high", "id": "train-0069"}
+{"input": "Hello team, I lost my company phone on the train. The whole site is impacted right now. You can reach me at jonas.weber@example.com.", "output": "category: security\npriority: critical", "id": "train-0124"}
+{"input": "Hi, The network share is extremely slow today. It happens several times a day. You can reach me at lucas.moreau@example.com.", "output": "category: network\npriority: medium", "id": "train-0000"}
+{"input": "Hi, I need a copy of last month's invoice. Production is down for everyone. You can reach me at lucas.moreau@example.com.", "output": "category: billing\npriority: critical", "id": "train-0107"}
+{"input": "Hello team, Please update the billing address for our subscription. I can work around it for now. You can reach me at alice.martin@example.com.", "output": "category: billing\npriority: medium", "id": "train-0251"}
+{"input": "Remove the permissions of a contractor who left. This affects all users in the office. Call me on +44 20 7946 4023.", "output": "category: access\npriority: critical", "id": "train-0019"}
+{"input": "Hey, The invoice for Zoom was charged twice. The whole site is impacted right now.", "output": "category: billing\npriority: critical", "id": "train-0005"}
+{"input": "Packet loss on the site-to-site tunnel. It happens several times a day.", "output": "category: network\npriority: medium", "id": "train-0306"}
+{"input": "The browser extension for Zoom stopped working. The whole site is impacted right now.", "output": "category: software\npriority: critical", "id": "train-0291"}
+{"input": "Hello team, I received a phishing email asking for my password. This affects all users in the office.", "output": "category: security\npriority: critical", "id": "train-0226"}
+{"input": "Wifi in meeting room Draco keeps disconnecting. The whole site is impacted right now. You can reach me at jonas.weber@example.com.", "output": "category: network\npriority: critical", "id": "train-0102"}
+{"input": "Hey, The invoice for Salesforce was charged twice. The whole site is impacted right now. You can reach me at sara.rossi@example.com.", "output": "category: billing\npriority: critical", "id": "train-0161"}
+{"input": "The VPN drops every few minutes. I cannot work at all.", "output": "category: network\npriority: high", "id": "train-0036"}
+{"input": "Antivirus flagged a file on my laptop. It slows me down quite a bit.", "output": "category: security\npriority: medium", "id": "train-0268"}
+{"input": "Hey, Please update the billing address for our subscription. No rush, whenever you have time. You can reach me at jonas.weber@example.com.", "output": "category: billing\npriority: low", "id": "train-0143"}
+{"input": "Hi, My badge does not open the Orion door. It slows me down quite a bit.", "output": "category: access\npriority: medium", "id": "train-0001"}
+{"input": "Hello team, Figma crashes when I export a report. I have a customer demo in one hour.", "output": "category: software\npriority: high", "id": "train-0057"}
+{"input": "Hi, Single sign-on loops back to the login page. No rush, whenever you have time.", "output": "category: access\npriority: low", "id": "train-0199"}
+{"input": "Hi, I lost my company phone on the train. Production is down for everyone.", "output": "category: security\npriority: critical", "id": "train-0178"}
+{"input": "Good morning, I clicked a suspicious link in an email. No rush, whenever you have time.", "output": "category: security\npriority: low", "id": "train-0034"}
+{"input": "I need Zoom installed on my workstation. Low priority, just letting you know. Call me on +44 20 7946 5135.", "output": "category: software\npriority: low", "id": "train-0123"}
+{"input": "Hello team, I cannot reach the intranet, the page times out. I cannot work at all.", "output": "category: network\npriority: high", "id": "train-0060"}
+{"input": "Good morning, My badge does not open the Borealis door. This affects all users in the office. You can reach me at jonas.weber@example.com.", "output": "category: access\npriority: critical", "id": "train-0319"}
+{"input": "Good morning, Files on my share were renamed with a strange extension. This affects all users in the office.", "output": "category: security\npriority: critical", "id": "train-0322"}
+{"input": "Hey, My MFA token no longer works. The whole site is impacted right now. You can reach me at lucas.moreau@example.com.", "output": "category: access\npriority: critical", "id": "train-0163"}
+{"input": "Hi, My headset microphone crackles. I can work around it for now.", "output": "category: hardware\npriority: medium", "id": "train-0242"}
+{"input": "Outlook will not open the attachments. Low priority, just letting you know.", "output": "category: software\npriority: low", "id": "train-0315"}
+{"input": "I need read access to the finance folder. This blocks the release due today. You can reach me at sara.rossi@example.com.", "output": "category: access\npriority: high", "id": "train-0277"}
+{"input": "Hey, The invoice for Jira was charged twice. It happens several times a day.", "output": "category: billing\npriority: medium", "id": "train-0149"}
+{"input": "Hello team, The purchase order for new laptops is stuck. I cannot work at all. You can reach me at lucas.moreau@example.com.", "output": "category: billing\npriority: high", "id": "train-0329"}
+{"input": "Hi, I cannot reach the intranet, the page times out. Production is down for everyone.", "output": "category: network\npriority: critical", "id": "train-0108"}
+{"input": "Hello team, Single sign-on loops back to the login page. This affects all users in the office.", "output": "category: access\npriority: critical", "id": "train-0241"}
+{"input": "Good morning, The network share is extremely slow today. I have a customer demo in one hour. Call me on +44 20 7946 1715.", "output": "category: network\npriority: high", "id": "train-0324"}
+{"input": "Hi, My second monitor stays black. It is a minor annoyance.", "output": "category: hardware\npriority: low", "id": "train-0164"}
+{"input": "The VPN drops every few minutes. It happens several times a day.", "output": "category: network\npriority: medium", "id": "train-0216"}
+{"input": "Hey, The laptop fan is very loud and it overheats. This blocks the release due today.", "output": "category: hardware\npriority: high", "id": "train-0158"}
+{"input": "Hey, The keyboard has several dead keys. I have a customer demo in one hour.", "output": "category: hardware\npriority: high", "id": "train-0026"}
+{"input": "Good morning, I lost my company phone on the train. This blocks the release due today. You can reach me at sara.rossi@example.com.", "output": "category: security\npriority: high", "id": "train-0112"}
+{"input": "Hello team, The printer on floor 4 jams on every page. Low priority, just letting you know. Call me on +44 20 7946 1798.", "output": "category: hardware\npriority: low", "id": "train-0044"}
+{"input": "The renewal quote looks wrong. I can work around it for now.", "output": "category: billing\npriority: medium", "id": "train-0065"}
+{"input": "A stranger followed me through the secure door. This blocks the release due today.", "output": "category: security\npriority: high", "id": "train-0136"}
+{"input": "Good morning, I received a phishing email asking for my password. Low priority, just letting you know. Call me on +44 20 7946 5543.", "output": "category: security\npriority: low", "id": "train-0088"}
+{"input": "Hey, Excel freezes when I open large files. It slows me down quite a bit.", "output": "category: software\npriority: medium", "id": "train-0201"}
+{"input": "Hi, My laptop battery dies after twenty minutes. This affects all users in the office. Call me on +44 20 7946 8693.", "output": "category: hardware\npriority: critical", "id": "train-0332"}
+{"input": "Files on my share were renamed with a strange extension. Production is down for everyone.", "output": "category: security\npriority: critical", "id": "train-0082"}
+{"input": "Hey, Jira crashes when I export a report. The whole site is impacted right now. You can reach me at sara.rossi@example.com.", "output": "category: software\npriority: critical", "id": "train-0321"}
+{"input": "Hey, I clicked a suspicious link in an email. This blocks the release due today. Call me on +44 20 7946 2940.", "output": "category: security\npriority: high", "id": "train-0304"}
+{"input": "Hey, I need a copy of last month's invoice. This blocks the release due today.", "output": "category: billing\npriority: high", "id": "train-0215"}
+{"input": "Hi, I need read access to the finance folder. No rush, whenever you have time.", "output": "category: access\npriority: low", "id": "train-0061"}
+{"input": "Hi, I am locked out of my account after a password reset. This affects all users in the office.", "output": "category: access\npriority: critical", "id": "train-0139"}
+{"input": "Good morning, I think someone used my account last night. It is a minor annoyance. You can reach me at jonas.weber@example.com.", "output": "category: security\npriority: low", "id": "train-0070"}
+{"input": "Excel freezes when I open large files. This blocks the release due today.", "output": "category: software\npriority: high", "id": "train-0075"}
+{"input": "Good morning, A stranger followed me through the secure door. No rush, whenever you have time.", "output": "category: security\npriority: low", "id": "train-0208"}
+{"input": "Good morning, Please grant me access to the Jira project. Low priority, just letting you know.", "output": "category: access\npriority: low", "id": "train-0055"}
+{"input": "The browser extension for Slack stopped working. This affects all users in the office.", "output": "category: software\npriority: critical", "id": "train-0351"}
+{"input": "Hey, I am locked out of my account after a password reset. It is a minor annoyance.", "output": "category: access\npriority: low", "id": "train-0043"}
+{"input": "Hi, The guest wifi portal never loads. This blocks the release due today.", "output": "category: network\npriority: high", "id": "train-0186"}
+{"input": "Hey, My MFA token no longer works. Production is down for everyone. Call me on +44 20 7946 3360.", "output": "category: access\npriority: critical", "id": "train-0187"}
+{"input": "Hey, Our credit card for Jira expired. It happens several times a day.", "output": "category: billing\npriority: medium", "id": "train-0269"}
+{"input": "Hey, DNS lookups for internal hosts fail. It happens several times a day.", "output": "category: network\npriority: medium", "id": "train-0246"}
+{"input": "Good morning, Please update the billing address for our subscription. It slows me down quite a bit. You can reach me at lucas.moreau@example.com.", "output": "category: billing\npriority: medium", "id": "train-0113"}
+{"input": "The renewal quote looks wrong. Low priority, just letting you know. You can reach me at lucas.moreau@example.com.", "output": "category: billing\npriority: low", "id": "train-0233"}
+{"input": "Good morning, The projector in room Draco shows no signal. I cannot work at all. Call me on +44 20 7946 6508.", "output": "category: hardware\npriority: high", "id": "train-0008"}
+{"input": "Good morning, I am locked out of my account after a password reset. It slows me down quite a bit. You can reach me at lucas.moreau@example.com.", "output": "category: access\npriority: medium", "id": "train-0223"}
+{"input": "Hello team, A USB stick was left in the meeting room Cygnus. This affects all users in the office. Call me on +44 20 7946 5351.", "output": "category: security\npriority: critical", "id": "train-0118"}
+{"input": "The update of Tableau failed halfway. Production is down for everyone.", "output": "category: software\npriority: critical", "id": "train-0009"}
+{"input": "Good morning, I cannot reach the intranet, the page times out. Production is down for everyone.", "output": "category: network\npriority: critical", "id": "train-0030"}
+{"input": "Hello team, The docking station does not charge my laptop. No rush, whenever you have time. You can reach me at lucas.moreau@example.com.", "output": "category: hardware\npriority: low", "id": "train-0050"}
+{"input": "Hi, Files on my share were renamed with a strange extension. This affects all users in the office.", "output": "category: security\npriority: critical", "id": "train-0010"}
+{"input": "Hello team, My headset microphone crackles. No rush, whenever you have time.", "output": "category: hardware\npriority: low", "id": "train-0266"}
+{"input": "Hi, Please update the billing address for our subscription. This blocks the release due today.", "output": "category: billing\npriority: high", "id": "train-0077"}
+{"input": "Hello team, I clicked a suspicious link in an email. I can work around it for now.", "output": "category: security\npriority: medium", "id": "train-0238"}
+{"input": "Hello team, Jira crashes when I export a report. Low priority, just letting you know.", "output": "category: software\npriority: low", "id": "train-0195"}
+{"input": "Hey, I lost my company phone on the train. Low priority, just letting you know.", "output": "category: security\npriority: low", "id": "train-0310"}
+{"input": "Hey, Excel freezes when I open large files. Low priority, just letting you know.", "output": "category: software\npriority: low", "id": "train-0267"}
+{"input": "Good morning, Jira crashes when I export a report. I cannot work at all. You can reach me at lucas.moreau@example.com.", "output": "category: software\npriority: high", "id": "train-0033"}
+{"input": "Hi, I am locked out of my account after a password reset. It is a minor annoyance.", "output": "category: access\npriority: low", "id": "train-0247"}
+{"input": "Good morning, The calendar does not sync with my phone. This affects all users in the office. You can reach me at sara.rossi@example.com.", "output": "category: software\npriority: critical", "id": "train-0081"}
+{"input": "Hey, Packet loss on the site-to-site tunnel. I have a customer demo in one hour. You can reach me at lucas.moreau@example.com.", "output": "category: network\npriority: high", "id": "train-0156"}
+{"input": "Hi, Files on my share were renamed with a strange extension. This affects all users in the office.", "output": "category: security\npriority: critical", "id": "train-0244"}
+{"input": "Good morning, DNS lookups for internal hosts fail. I cannot work at all. You can reach me at sara.rossi@example.com.", "output": "category: network\npriority: high", "id": "train-0126"}
+{"input": "Good morning, Packet loss on the site-to-site tunnel. The whole site is impacted right now. You can reach me at sara.rossi@example.com.", "output": "category: network\npriority: critical", "id": "train-0288"}
+{"input": "Hi, My badge does not open the Atlas door. I can work around it for now.", "output": "category: access\npriority: medium", "id": "train-0271"}
+{"input": "Hey, DNS lookups for internal hosts fail. I cannot work at all. You can reach me at priya.patel@example.com.", "output": "category: network\npriority: high", "id": "train-0180"}
+{"input": "Good morning, The projector in room Cygnus shows no signal. Low priority, just letting you know.", "output": "category: hardware\npriority: low", "id": "train-0320"}
+{"input": "Hey, Excel freezes when I open large files. This blocks the release due today. You can reach me at priya.patel@example.com.", "output": "category: software\npriority: high", "id": "train-0003"}
+{"input": "Hello team, A stranger followed me through the secure door. Production is down for everyone. Call me on +44 20 7946 8521.", "output": "category: security\npriority: critical", "id": "train-0214"}
+{"input": "Hi, The docking station does not charge my laptop. I can work around it for now.", "output": "category: hardware\npriority: medium", "id": "train-0206"}
+{"input": "Hey, We were charged for seats we removed. I cannot work at all. You can reach me at priya.patel@example.com.", "output": "category: billing\npriority: high", "id": "train-0083"}
+{"input": "Good morning, I lost my company phone on the train. I have a customer demo in one hour. You can reach me at sara.rossi@example.com.", "output": "category: security\npriority: high", "id": "train-0004"}
+{"input": "Hello team, The network share is extremely slow today. It slows me down quite a bit. You can reach me at priya.patel@example.com.", "output": "category: network\npriority: medium", "id": "train-0330"}
+{"input": "Hello team, Cancel the unused Figma licences. I can work around it for now. You can reach me at priya.patel@example.com.", "output": "category: billing\npriority: medium", "id": "train-0089"}
+{"input": "Hello team, The VPN drops every few minutes. No rush, whenever you have time. Call me on +44 20 7946 4263.", "output": "category: network\npriority: low", "id": "train-0018"}
+{"input": "Good morning, The invoice for Slack was charged twice. It slows me down quite a bit. Call me on +44 20 7946 2863.", "output": "category: billing\npriority: medium", "id": "train-0119"}
+{"input": "The docking station does not charge my laptop. I have a customer demo in one hour.", "output": "category: hardware\npriority: high", "id": "train-0110"}
+{"input": "Good morning, Jira crashes when I export a report. This affects all users in the office. Call me on +44 20 7946 6797.", "output": "category: software\npriority: critical", "id": "train-0285"}
+{"input": "Good morning, The guest wifi portal never loads. This blocks the release due today. Call me on +44 20 7946 6082.", "output": "category: network\npriority: high", "id": "train-0006"}
+{"input": "Hi, The printer on floor 5 jams on every page. I can work around it for now.", "output": "category: hardware\npriority: medium", "id": "train-0098"}
+{"input": "Hey, Packet loss on the site-to-site tunnel. This blocks the release due today.", "output": "category: network\npriority: high", "id": "train-0240"}
+{"input": "Good morning, Excel freezes when I open large files. I have a customer demo in one hour.", "output": "category: software\npriority: high", "id": "train-0231"}
+{"input": "Hey, Notion crashes when I export a report. No rush, whenever you have time.", "output": "category: software\npriority: low", "id": "train-0207"}
+{"input": "Hi, The guest wifi portal never loads. It is a minor annoyance. You can reach me at alice.martin@example.com.", "output": "category: network\npriority: low", "id": "train-0048"}
+{"input": "Hey, Slack crashes when I export a report. Low priority, just letting you know.", "output": "category: software\npriority: low", "id": "train-0177"}
+{"input": "Hello team, Please grant me access to the Notion project. The whole site is impacted right now. You can reach me at alice.martin@example.com.", "output": "category: access\npriority: critical", "id": "train-0031"}
+{"input": "Hi, I need a copy of last month's invoice. It slows me down quite a bit. You can reach me at sara.rossi@example.com.", "output": "category: billing\npriority: medium", "id": "train-0131"}
+{"input": "Excel freezes when I open large files. This affects all users in the office.", "output": "category: software\npriority: critical", "id": "train-0183"}
+{"input": "Hi, Zoom crashes when I export a report. Production is down for everyone.", "output": "category: software\npriority: critical", "id": "train-0213"}
+{"input": "Hi, The laptop fan is very loud and it overheats. The whole site is impacted right now.", "output": "category: hardware\npriority: critical", "id": "train-0092"}
+{"input": "Hey, I clicked a suspicious link in an email. No rush, whenever you have time.", "output": "category: security\npriority: low", "id": "train-0280"}
+{"input": "Hello team, Cancel the unused Jira licences. This blocks the release due today.", "output": "category: billing\npriority: high", "id": "train-0179"}
+{"input": "Hey, Cancel the unused Jira licences. I can work around it for now. You can reach me at jonas.weber@example.com.", "output": "category: billing\npriority: medium", "id": "train-0353"}
+{"input": "Hello team, My second monitor stays black. I have a customer demo in one hour. Call me on +44 20 7946 6632.", "output": "category: hardware\npriority: high", "id": "train-0260"}
+{"input": "Hello team, My badge does not open the Cygnus door. The whole site is impacted right now. You can reach me at jonas.weber@example.com.", "output": "category: access\npriority: critical", "id": "train-0205"}
+{"input": "Hello team, Salesforce crashes when I export a report. It slows me down quite a bit. You can reach me at jonas.weber@example.com.", "output": "category: software\npriority: medium", "id": "train-0249"}
+{"input": "Good morning, I lost my company phone on the train. I cannot work at all.", "output": "category: security\npriority: high", "id": "train-0298"}
+{"input": "Hi, I received a phishing email asking for my password. This affects all users in the office. You can reach me at sara.rossi@example.com.", "output": "category: security\npriority: critical", "id": "train-0346"}
+{"input": "Good morning, Single sign-on loops back to the login page. It happens several times a day.", "output": "category: access\npriority: medium", "id": "train-0127"}
+{"input": "Hello team, The browser extension for Figma stopped working. It slows me down quite a bit.", "output": "category: software\npriority: medium", "id": "train-0243"}
+{"input": "Hello team, Antivirus flagged a file on my laptop. It slows me down quite a bit.", "output": "category: security\npriority: medium", "id": "train-0220"}
+{"input": "Hello team, The projector in room Borealis shows no signal. No rush, whenever you have time.", "output": "category: hardware\npriority: low", "id": "train-0080"}
+{"input": "Hey, The network share is extremely slow today. I can work around it for now.", "output": "category: network\npriority: medium", "id": "train-0336"}
+{"input": "Hey, Packet loss on the site-to-site tunnel. It is a minor annoyance. You can reach me at lucas.moreau@example.com.", "output": "category: network\npriority: low", "id": "train-0066"}
+{"input": "The browser extension for Figma stopped working. I have a customer demo in one hour. You can reach me at jonas.weber@example.com.", "output": "category: software\npriority: high", "id": "train-0225"}
+{"input": "Hi, DNS lookups for internal hosts fail. It happens several times a day. Call me on +44 20 7946 4970.", "output": "category: network\npriority: medium", "id": "train-0144"}
+{"input": "Hi, I lost my company phone on the train. This affects all users in the office.", "output": "category: security\npriority: critical", "id": "train-0106"}
+{"input": "Good morning, Outlook will not open the attachments. It slows me down quite a bit. You can reach me at priya.patel@example.com.", "output": "category: software\npriority: medium", "id": "train-0093"}
+{"input": "The laptop fan is very loud and it overheats. I have a customer demo in one hour.", "output": "category: hardware\npriority: high", "id": "train-0170"}
+{"input": "Hey, DNS lookups for internal hosts fail. This affects all users in the office. You can reach me at jonas.weber@example.com.", "output": "category: network\npriority: critical", "id": "train-0078"}
+{"input": "Hello team, DNS lookups for internal hosts fail. It happens several times a day.", "output": "category: network\npriority: medium", "id": "train-0276"}
+{"input": "Hello team, The guest wifi portal never loads. Production is down for everyone. Call me on +44 20 7946 5611.", "output": "category: network\npriority: critical", "id": "train-0258"}
+{"input": "Hi, The docking station does not charge my laptop. It slows me down quite a bit.", "output": "category: hardware\npriority: medium", "id": "train-0356"}
+{"input": "Hey, The guest wifi portal never loads. I cannot work at all.", "output": "category: network\npriority: high", "id": "train-0204"}
+{"input": "Hello team, My headset microphone crackles. I can work around it for now. You can reach me at priya.patel@example.com.", "output": "category: hardware\npriority: medium", "id": "train-0002"}
+{"input": "Hello team, The new hire Alice Martin has no account yet. Production is down for everyone. Call me on +44 20 7946 6316.", "output": "category: access\npriority: critical", "id": "train-0253"}
+{"input": "Hello team, Single sign-on loops back to the login page. I cannot work at all.", "output": "category: access\npriority: high", "id": "train-0169"}
+{"input": "Hello team, SAP shows a licence expired message. The whole site is impacted right now.", "output": "category: software\npriority: critical", "id": "train-0099"}
+{"input": "Hey, My ethernet port shows no link. Production is down for everyone.", "output": "category: network\npriority: critical", "id": "train-0138"}
+{"input": "Good morning, The keyboard has several dead keys. The whole site is impacted right now.", "output": "category: hardware\npriority: critical", "id": "train-0314"}
+{"input": "The guest wifi portal never loads. I have a customer demo in one hour.", "output": "category: network\npriority: high", "id": "train-0234"}
+{"input": "Hey, The printer on floor 2 jams on every page. This affects all users in the office.", "output": "category: hardware\npriority: critical", "id": "train-0134"}
+{"input": "Good morning, Packet loss on the site-to-site tunnel. This blocks the release due today.", "output": "category: network\npriority: high", "id": "train-0168"}
+{"input": "Single sign-on loops back to the login page. I have a customer demo in one hour.", "output": "category: access\npriority: high", "id": "train-0337"}
+{"input": "Hello team, I need a copy of last month's invoice. The whole site is impacted right now.", "output": "category: billing\npriority: critical", "id": "train-0317"}
+{"input": "Hi, I need Zoom installed on my workstation. Low priority, just letting you know. You can reach me at lucas.moreau@example.com.", "output": "category: software\npriority: low", "id": "train-0087"}
+{"input": "Hi, Cancel the unused SAP licences. Production is down for everyone. Call me on +44 20 7946 3249.", "output": "category: billing\npriority: critical", "id": "train-0221"}
+{"input": "Hello team, Wifi in meeting room Cygnus keeps disconnecting. I cannot work at all.", "output": "category: network\npriority: high", "id": "train-0342"}
+{"input": "Hi, The purchase order for new laptops is stuck. I have a customer demo in one hour.", "output": "category: billing\npriority: high", "id": "train-0257"}
+{"input": "Good morning, The keyboard has several dead keys. I cannot work at all.", "output": "category: hardware\npriority: high", "id": "train-0068"}
+{"input": "The purchase order for new laptops is stuck. The whole site is impacted right now. Call me on +44 20 7946 5514.", "output": "category: billing\npriority: critical", "id": "train-0293"}
+{"input": "Hey, The VPN drops every few minutes. It slows me down quite a bit. You can reach me at lucas.moreau@example.com.", "output": "category: network\npriority: medium", "id": "train-0264"}
+{"input": "Hi, I lost my company phone on the train. I cannot work at all.", "output": "category: security\npriority: high", "id": "train-0196"}
+{"input": "Hi, Figma crashes when I export a report. It is a minor annoyance. You can reach me at jonas.weber@example.com.", "output": "category: software\npriority: low", "id": "train-0111"}
+{"input": "The invoice for Slack was charged twice. The whole site is impacted right now.", "output": "category: billing\npriority: critical", "id": "train-0239"}
+{"input": "Hey, Remove the permissions of a contractor who left. I can work around it for now.", "output": "category: access\npriority: medium", "id": "train-0355"}
+{"input": "Good morning, My badge does not open the Atlas door. It happens several times a day. You can reach me at jonas.weber@example.com.", "output": "category: access\npriority: medium", "id": "train-0007"}
+{"input": "Hello team, The VPN drops every few minutes. I have a customer demo in one hour. You can reach me at lucas.moreau@example.com.", "output": "category: network\npriority: high", "id": "train-0192"}
+{"input": "Hello team, Wifi in meeting room Cygnus keeps disconnecting. The whole site is impacted right now.", "output": "category: network\npriority: critical", "id": "train-0162"}
+{"input": "Hello team, Single sign-on loops back to the login page. I can work around it for now.", "output": "category: access\npriority: medium", "id": "train-0289"}
+{"input": "Please update the billing address for our subscription. Production is down for everyone. Call me on +44 20 7946 9468.", "output": "category: billing\npriority: critical", "id": "train-0245"}
+{"input": "Hi, We were charged for seats we removed. This affects all users in the office.", "output": "category: billing\npriority: critical", "id": "train-0185"}
+{"input": "Good morning, The invoice for SAP was charged twice. It slows me down quite a bit. You can reach me at jonas.weber@example.com.", "output": "category: billing\npriority: medium", "id": "train-0167"}
