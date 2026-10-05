@@ -42,10 +42,11 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_LOCKED }}
           cache: pip
-          cache-dependency-path: requirements/dev.txt
+          cache-dependency-path: requirements/ml.txt
+      # mypy checks against the real ML libraries: their stubs decide what is typed.
       - name: Install (locked, hashes required)
         run: |
-          pip install --require-hashes -r requirements/dev.txt
+          pip install --require-hashes -r requirements/ml.txt
           pip install --no-deps -e .
       - run: ruff check --output-format=github .
       - run: ruff format --check --diff .
