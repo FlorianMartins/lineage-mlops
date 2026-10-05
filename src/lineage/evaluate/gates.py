@@ -7,6 +7,7 @@ and the threshold side by side. A model cannot be promoted unless all three pass
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -16,6 +17,8 @@ DEFAULTS: dict[str, dict[str, float]] = {
         "min_gain_over_base": 0.10,
         "min_gain_over_rag": 0.0,
         "max_regression": 0.02,
+        "regression_alpha": 0.05,
+        "max_drop": 0.10,
     },
     "privacy": {
         "max_canary_exposure": 7.0,
@@ -56,7 +59,50 @@ def thresholds(config: dict[str, Any], gate: str) -> dict[str, float]:
     return merged
 
 
-def quality(results: dict[str, Any], config: dict[str, Any], reference: float | None) -> Gate:
+def mcnemar_worse(reference: list[int], candidate: list[int]) -> tuple[int, int, float]:
+    """One-sided exact McNemar test that the candidate is worse on the same examples.
+
+    Returns (examples only the reference got right, only the candidate got right,
+    p-value). Only the disagreements carry information; under "equally good" each one
+    is a fair coin.
+    """
+    lost = sum(r == 1 and c == 0 for r, c in zip(reference, candidate, strict=True))
+    won = sum(r == 0 and c == 1 for r, c in zip(reference, candidate, strict=True))
+    n = lost + won
+    p = sum(math.comb(n, k) for k in range(lost, n + 1)) / 2**n if n else 1.0
+    return lost, won, p
+
+
+def _regression(
+    gate: Gate, candidate: dict[str, Any], reference: dict[str, Any], t: dict[str, float]
+) -> None:
+    ft, ref = candidate["exact_match"], reference["exact_match"]
+    paired = (
+        reference.get("correct") is not None
+        and candidate.get("correct") is not None
+        and reference.get("records_sha256") == candidate.get("records_sha256")
+    )
+    if not paired:
+        gate.check(
+            ft >= ref - t["max_regression"],
+            f"regression vs production: {ft:.3f} < {ref:.3f} - {t['max_regression']:.3f}",
+        )
+        return
+    lost, won, p = mcnemar_worse(reference["correct"], candidate["correct"])
+    gate.check(
+        p >= t["regression_alpha"],
+        f"significantly worse than production on the same examples: loses {lost}, "
+        f"wins {won} (McNemar p={p:.3f} < {t['regression_alpha']})",
+    )
+    gate.check(
+        ft >= ref - t["max_drop"],
+        f"drops {ref - ft:.3f} below production ({ref:.3f}), more than {t['max_drop']}",
+    )
+
+
+def quality(
+    results: dict[str, Any], config: dict[str, Any], reference: float | dict[str, Any] | None
+) -> Gate:
     """Fine-tuned vs base vs RAG (and vs production when there is one)."""
     t = thresholds(config, "quality")
     gate = Gate("quality", thresholds=t)
@@ -76,7 +122,9 @@ def quality(results: dict[str, Any], config: dict[str, Any], reference: float | 
         f"gain over the RAG baseline {ft - rag:+.3f} below {t['min_gain_over_rag']:+.3f}"
         " (retrieval alone would do as well: do not fine-tune)",
     )
-    if reference is not None:
+    if isinstance(reference, dict):
+        _regression(gate, results["finetuned"], reference, t)
+    elif reference is not None:
         gate.check(
             ft >= reference - t["max_regression"],
             f"regression vs production: {ft:.3f} < {reference:.3f} - {t['max_regression']:.3f}",

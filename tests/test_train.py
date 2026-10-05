@@ -108,3 +108,37 @@ def test_completion_only_loss_masks_the_prompt(tiny_workspace):
         TrainConfig(loss_on="full"),
     )
     assert -100 not in full
+
+
+def test_grid_parsing():
+    from lineage.train.sweep import combinations, parse_grid
+
+    grid = parse_grid(["learning_rate=5e-4,1e-3", "target_modules=attn,all", "epochs=1"])
+    assert grid["learning_rate"] == [5e-4, 1e-3] and grid["epochs"] == [1]
+    assert grid["target_modules"][1][-1] == "down_proj"
+    assert len(combinations(grid)) == 4
+    for bad in (["epocs=1"], ["target_modules=mlp"], ["learning_rate"], []):
+        with pytest.raises(Exception):  # noqa: B017 - LineageError for every bad shape
+            parse_grid(bad)
+
+
+def test_sweep_selects_on_validation_and_never_on_heldout(tiny_workspace):
+    from lineage.audit import AuditLog
+    from lineage.errors import PolicyDenied
+    from lineage.train.sweep import parse_grid, sweep
+
+    ws = tiny_workspace
+    version, _ = data_service.ingest(
+        ws,
+        "triage",
+        {split: ws.root / f"data/{split}.jsonl" for split in ("train", "validation", "heldout")},
+    )
+    data_service.run_validation(ws, version)
+    with pytest.raises(PolicyDenied, match="leak the test set"):
+        sweep(ws, version, parse_grid(["seed=1"]), split="heldout")
+    record = sweep(ws, version, parse_grid(["seed=1,2"]))
+    assert record["selection_split"] == "validation" and len(record["results"]) == 2
+    assert record["selected"] in {r["run"] for r in record["results"]}
+    assert all(r["examples"] == 72 for r in record["results"])
+    event = [e for e in AuditLog(ws.audit_log).entries() if e.event == "train.sweep"][-1]
+    assert event.subjects["run"] == record["selected"] and event.payload["runs"] == 2

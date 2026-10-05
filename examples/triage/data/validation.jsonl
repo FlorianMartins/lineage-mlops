@@ -1,0 +1,72 @@
+{"input": "I get an error when I open Notion. I am completely blocked.", "output": "category: software\npriority: high", "id": "validation-0015"}
+{"input": "Pages load very slowly over the office network. Whenever you can.", "output": "category: network\npriority: low", "id": "validation-0000"}
+{"input": "Good morning, My account was disabled by mistake. Whenever you can.", "output": "category: access\npriority: low", "id": "validation-0049"}
+{"input": "Hi, My laptop will not power on. All teams are affected right now.", "output": "category: hardware\npriority: critical", "id": "validation-0068"}
+{"input": "Hi, The webcam shows a black image. All teams are affected right now.", "output": "category: hardware\npriority: critical", "id": "validation-0014"}
+{"input": "Hey, Our Slack invoice shows the wrong company name. All teams are affected right now.", "output": "category: billing\npriority: critical", "id": "validation-0047"}
+{"input": "Hey, We need to change the payment method for Notion. The entire floor is down.", "output": "category: billing\npriority: critical", "id": "validation-0011"}
+{"input": "My password appeared in a list of leaked accounts. I am completely blocked.", "output": "category: security\npriority: high", "id": "validation-0022"}
+{"input": "Hello team, My laptop will not power on. I am completely blocked.", "output": "category: hardware\npriority: high", "id": "validation-0026"}
+{"input": "Hello team, Salesforce does not start after the update. All teams are affected right now. Call me on +44 20 7946 9884.", "output": "category: software\npriority: critical", "id": "validation-0069"}
+{"input": "Hello team, My laptop cannot get an IP address. All teams are affected right now.", "output": "category: network\npriority: critical", "id": "validation-0066"}
+{"input": "Good morning, Jira does not start after the update. I am completely blocked.", "output": "category: software\npriority: high", "id": "validation-0033"}
+{"input": "Hi, My password appeared in a list of leaked accounts. Whenever you can. Call me on +44 20 7946 5489.", "output": "category: security\npriority: low", "id": "validation-0040"}
+{"input": "Hey, My laptop cannot get an IP address. All teams are affected right now.", "output": "category: network\npriority: critical", "id": "validation-0024"}
+{"input": "Hey, I cannot log in to Figma anymore. All teams are affected right now.", "output": "category: access\npriority: critical", "id": "validation-0001"}
+{"input": "Hi, My password appeared in a list of leaked accounts. All teams are affected right now. Call me on +44 20 7946 9964.", "output": "category: security\npriority: critical", "id": "validation-0034"}
+{"input": "Hey, I need permission to edit the shared calendar. It is slowing me down.", "output": "category: access\npriority: medium", "id": "validation-0031"}
+{"input": "Hello team, Video calls keep freezing because of the connection. Whenever you can.", "output": "category: network\npriority: low", "id": "validation-0030"}
+{"input": "Hello team, Our SAP invoice shows the wrong company name. I am completely blocked. You can reach me at sara.rossi@example.com.", "output": "category: billing\npriority: high", "id": "validation-0029"}
+{"input": "Hello team, My account was disabled by mistake. It is slowing me down.", "output": "category: access\npriority: medium", "id": "validation-0007"}
+{"input": "Hey, The tax on the last invoice is incorrect. A client meeting starts soon.", "output": "category: billing\npriority: high", "id": "validation-0005"}
+{"input": "Good morning, I cannot log in to Salesforce anymore. The entire floor is down.", "output": "category: access\npriority: critical", "id": "validation-0025"}
+{"input": "My laptop cannot get an IP address. I am completely blocked. Call me on +44 20 7946 4481.", "output": "category: network\npriority: high", "id": "validation-0018"}
+{"input": "Hey, The scanner on floor 5 is broken. I am completely blocked. You can reach me at alice.martin@example.com.", "output": "category: hardware\npriority: high", "id": "validation-0044"}
+{"input": "I need permission to edit the shared calendar. Whenever you can.", "output": "category: access\npriority: low", "id": "validation-0019"}
+{"input": "Hi, My account was disabled by mistake. I am completely blocked. You can reach me at sara.rossi@example.com.", "output": "category: access\npriority: high", "id": "validation-0055"}
+{"input": "Hey, My password appeared in a list of leaked accounts. The entire floor is down.", "output": "category: security\npriority: critical", "id": "validation-0052"}
+{"input": "My laptop will not power on. Just a small issue.", "output": "category: hardware\npriority: low", "id": "validation-0020"}
+{"input": "Hi, An unknown device appeared in my account sessions. It keeps happening during the day.", "output": "category: security\npriority: medium", "id": "validation-0016"}
+{"input": "Pages load very slowly over the office network. A client meeting starts soon. You can reach me at lucas.moreau@example.com.", "output": "category: network\npriority: high", "id": "validation-0006"}
+{"input": "Hey, I get an error when I open Zoom. The entire floor is down. You can reach me at alice.martin@example.com.", "output": "category: software\npriority: critical", "id": "validation-0027"}
+{"input": "Hello team, My laptop will not power on. It is slowing me down. You can reach me at alice.martin@example.com.", "output": "category: hardware\npriority: medium", "id": "validation-0002"}
+{"input": "We need to change the payment method for Notion. The entire floor is down. You can reach me at priya.patel@example.com.", "output": "category: billing\npriority: critical", "id": "validation-0017"}
+{"input": "Hello team, Our Slack invoice shows the wrong company name. The entire floor is down.", "output": "category: billing\npriority: critical", "id": "validation-0059"}
+{"input": "Hey, Pages load very slowly over the office network. Whenever you can.", "output": "category: network\npriority: low", "id": "validation-0012"}
+{"input": "Good morning, My laptop will not power on. Just a small issue. You can reach me at sara.rossi@example.com.", "output": "category: hardware\npriority: low", "id": "validation-0008"}
+{"input": "Hello team, The scanner on floor 4 is broken. A client meeting starts soon.", "output": "category: hardware\npriority: high", "id": "validation-0056"}
+{"input": "Hello team, An unknown device appeared in my account sessions. I am completely blocked.", "output": "category: security\npriority: high", "id": "validation-0070"}
+{"input": "Hi, Pages load very slowly over the office network. I am completely blocked. You can reach me at lucas.moreau@example.com.", "output": "category: network\npriority: high", "id": "validation-0048"}
+{"input": "Hey, The scanner on floor 3 is broken. I am completely blocked.", "output": "category: hardware\npriority: high", "id": "validation-0050"}
+{"input": "Hey, We need to change the payment method for Notion. Whenever you can.", "output": "category: billing\npriority: low", "id": "validation-0023"}
+{"input": "Hi, Our Jira invoice shows the wrong company name. All teams are affected right now. Call me on +44 20 7946 5453.", "output": "category: billing\npriority: critical", "id": "validation-0071"}
+{"input": "Hi, I cannot log in to Notion anymore. A client meeting starts soon. You can reach me at jonas.weber@example.com.", "output": "category: access\npriority: high", "id": "validation-0037"}
+{"input": "Hello team, Video calls keep freezing because of the connection. It is slowing me down. You can reach me at sara.rossi@example.com.", "output": "category: network\npriority: medium", "id": "validation-0036"}
+{"input": "Hello team, I need permission to edit the shared calendar. Whenever you can.", "output": "category: access\npriority: low", "id": "validation-0013"}
+{"input": "Hi, I need permission to edit the shared calendar. Whenever you can.", "output": "category: access\npriority: low", "id": "validation-0067"}
+{"input": "Hey, Video calls keep freezing because of the connection. A client meeting starts soon.", "output": "category: network\npriority: high", "id": "validation-0054"}
+{"input": "Hi, Slack does not start after the update. A client meeting starts soon.", "output": "category: software\npriority: high", "id": "validation-0063"}
+{"input": "I get an error when I open Zoom. Whenever you can.", "output": "category: software\npriority: low", "id": "validation-0021"}
+{"input": "Good morning, Our Zoom invoice shows the wrong company name. Whenever you can.", "output": "category: billing\npriority: low", "id": "validation-0053"}
+{"input": "Hello team, Jira does not start after the update. The entire floor is down.", "output": "category: software\npriority: critical", "id": "validation-0051"}
+{"input": "Hi, My password appeared in a list of leaked accounts. Whenever you can.", "output": "category: security\npriority: low", "id": "validation-0058"}
+{"input": "Hey, Video calls keep freezing because of the connection. Just a small issue. You can reach me at alice.martin@example.com.", "output": "category: network\npriority: low", "id": "validation-0060"}
+{"input": "Good morning, Salesforce does not start after the update. Whenever you can. You can reach me at alice.martin@example.com.", "output": "category: software\npriority: low", "id": "validation-0003"}
+{"input": "Hi, The spell checker in Word stopped working. The entire floor is down.", "output": "category: software\npriority: critical", "id": "validation-0039"}
+{"input": "Hey, An unknown device appeared in my account sessions. I am completely blocked.", "output": "category: security\npriority: high", "id": "validation-0010"}
+{"input": "Hey, Notion does not start after the update. The entire floor is down. You can reach me at alice.martin@example.com.", "output": "category: software\npriority: critical", "id": "validation-0009"}
+{"input": "We need to change the payment method for Slack. I am completely blocked.", "output": "category: billing\npriority: high", "id": "validation-0041"}
+{"input": "Hi, I cannot log in to Jira anymore. I am completely blocked. You can reach me at sara.rossi@example.com.", "output": "category: access\npriority: high", "id": "validation-0043"}
+{"input": "The scanner on floor 5 is broken. I am completely blocked. You can reach me at lucas.moreau@example.com.", "output": "category: hardware\npriority: high", "id": "validation-0062"}
+{"input": "Good morning, The scanner on floor 3 is broken. The entire floor is down.", "output": "category: hardware\npriority: critical", "id": "validation-0032"}
+{"input": "Hey, I get an error when I open Salesforce. The entire floor is down.", "output": "category: software\npriority: critical", "id": "validation-0045"}
+{"input": "Good morning, Our Zoom invoice shows the wrong company name. All teams are affected right now. You can reach me at sara.rossi@example.com.", "output": "category: billing\npriority: critical", "id": "validation-0035"}
+{"input": "Hi, An unknown device appeared in my account sessions. The entire floor is down.", "output": "category: security\npriority: critical", "id": "validation-0064"}
+{"input": "Hello team, The spell checker in Word stopped working. Just a small issue.", "output": "category: software\npriority: low", "id": "validation-0057"}
+{"input": "Good morning, My password appeared in a list of leaked accounts. Whenever you can.", "output": "category: security\npriority: low", "id": "validation-0028"}
+{"input": "Hey, Video calls keep freezing because of the connection. It keeps happening during the day. You can reach me at sara.rossi@example.com.", "output": "category: network\npriority: medium", "id": "validation-0042"}
+{"input": "Hey, My account was disabled by mistake. A client meeting starts soon.", "output": "category: access\npriority: high", "id": "validation-0061"}
+{"input": "Hi, A colleague received a fake invoice with a strange attachment. Just a small issue.", "output": "category: security\npriority: low", "id": "validation-0004"}
+{"input": "Hi, Our Salesforce invoice shows the wrong company name. Just a small issue. You can reach me at alice.martin@example.com.", "output": "category: billing\npriority: low", "id": "validation-0065"}
+{"input": "Hi, An unknown device appeared in my account sessions. I am completely blocked.", "output": "category: security\npriority: high", "id": "validation-0046"}
+{"input": "Hello team, The scanner on floor 5 is broken. It keeps happening during the day.", "output": "category: hardware\npriority: medium", "id": "validation-0038"}

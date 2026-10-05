@@ -9,6 +9,7 @@ adapter, did not pass, or was edited.
 from __future__ import annotations
 
 import json
+import math
 import time
 from pathlib import Path
 from typing import Any
@@ -31,39 +32,76 @@ REPORT = "eval.json"
 STOP = ["###"]
 
 
+def wilson(successes: int, n: int, z: float = 1.96) -> list[float]:
+    """95 % Wilson score interval for a proportion.
+
+    With 72 held-out examples, an exact match of 0.40 is really "between 0.29 and 0.52":
+    two models 0.04 apart are not distinguishable, and the report says so.
+    """
+    if n == 0:
+        return [0.0, 1.0]
+    p = successes / n
+    centre = (p + z * z / (2 * n)) / (1 + z * z / n)
+    half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / (1 + z * z / n)
+    return [round(max(0.0, centre - half), 4), round(min(1.0, centre + half), 4)]
+
+
 def quality_metrics(records: list[Record], outputs: list[str], task: TaskSpec) -> dict[str, Any]:
     """Exact match (every field right), per-field accuracy and well-formedness."""
     n = len(records)
     per_field = dict.fromkeys(task.fields, 0)
     exact = valid = 0
+    correct: list[int] = []
     for record, output in zip(records, outputs, strict=True):
         truth = task.parse(record.output)
         guess = task.parse(output)
         hits = [guess.get(k) == v for k, v in truth.items()]
         exact += all(hits)
+        correct.append(int(all(hits)))
         valid += not task.problems(output)
         for name, hit in zip(truth, hits, strict=True):
             per_field[name] += hit
     return {
         "examples": n,
         "exact_match": round(exact / n, 4) if n else 0.0,
+        "exact_match_ci95": wilson(exact, n),
+        "correct": correct,
+        "records_sha256": sha256_json([r.hash for r in records]),
         "valid": round(valid / n, 4) if n else 0.0,
         "field_accuracy": {k: round(v / n, 4) if n else 0.0 for k, v in per_field.items()},
     }
 
 
-def reference_score(ws: Workspace) -> tuple[str | None, float | None]:
-    """Exact match of the current production model, for the regression check."""
-    try:
-        from lineage.registry.store import Registry
-    except ImportError:  # pragma: no cover - registry is part of the package
-        return None, None
+def split_score(ws: Workspace, run_ref: str, split: str) -> dict[str, Any]:
+    """Quality of one run on one split (used for model selection, never for gates)."""
+    run = train_service.load_run(ws, run_ref)
+    _, snapshot = models.verify_snapshot(ws)
+    task = data_service.task_of(ws)
+    records = list(data_service.store_of(ws).get(run.record["dataset"]).split(split).records)
+    threads = int(ws.section("train").get("threads", 4))
+    model = Model.load(snapshot, run.adapter, "finetuned", threads)
+    outputs = model.generate([task.prompt(r.input) for r in records])
+    return quality_metrics(records, outputs, task)
+
+
+def reference_score(ws: Workspace) -> tuple[str | None, dict[str, Any] | None]:
+    """Quality of the current production model, for the regression check.
+
+    Includes per-example correctness when the production report has it, so the gate
+    can compare both models on the same examples instead of on two noisy averages.
+    """
+    from lineage.registry.store import Registry
+
     registry = Registry(ws)
     current = registry.production()
     if current is None:
         return None, None
-    report = registry.eval_report(current)
-    return current["version"], float(report["results"]["quality"]["finetuned"]["exact_match"])
+    finetuned = registry.eval_report(current)["results"]["quality"]["finetuned"]
+    return current["version"], {
+        "exact_match": float(finetuned["exact_match"]),
+        "correct": finetuned.get("correct"),
+        "records_sha256": finetuned.get("records_sha256"),
+    }
 
 
 def evaluate(ws: Workspace, run_ref: str) -> dict[str, Any]:
@@ -163,7 +201,11 @@ def evaluate(ws: Workspace, run_ref: str) -> dict[str, Any]:
             "sha256": sha256_file(suite_path),
             "cases": len(suite),
         },
-        "reference": {"production": production_version, "exact_match": production_score},
+        "reference": {
+            "production": production_version,
+            "exact_match": production_score["exact_match"] if production_score else None,
+            "paired": bool(production_score and production_score.get("correct")),
+        },
         "results": {
             "quality": quality_results,
             "canaries": canary_results,

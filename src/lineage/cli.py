@@ -39,13 +39,13 @@ def emit(args: argparse.Namespace, human: str, data: Any) -> None:
         print(human)
 
 
-def _splits(values: Sequence[str]) -> dict[str, Path]:
+def _splits(values: Sequence[str]) -> dict[str, list[Path]]:
     splits = {}
     for value in values:
-        name, sep, path = value.partition("=")
-        if not sep or not name or not path:
-            raise LineageError(f"split '{value}' must look like name=path")
-        splits[name] = Path(path)
+        name, sep, paths = value.partition("=")
+        if not sep or not name or not paths:
+            raise LineageError(f"split '{value}' must look like name=path[+path...]")
+        splits[name] = [Path(p) for p in paths.split("+")]
     return splits
 
 
@@ -248,6 +248,30 @@ def _train_run(args: argparse.Namespace, ws: Workspace) -> int:
     return 0
 
 
+@command("train.sweep")
+def _train_sweep(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.train import sweep
+
+    record = sweep.sweep(ws, args.dataset, sweep.parse_grid(args.grid), split=args.split)
+    lines = [f"sweep on {record['dataset'][:15]}, selected on '{record['selection_split']}':"]
+    for r in sorted(record["results"], key=lambda r: -r["exact_match"]):
+        mark = "*" if r["run"] == record["selected"] else " "
+        lo, hi = r["exact_match_ci95"]
+        tie = "≈" if r["indistinguishable_from_selected"] and mark == " " else " "
+        lines.append(
+            f" {mark}{tie}{r['exact_match']:.3f} [{lo:.2f}-{hi:.2f}]  {r['run']}  {r['overrides']}"
+        )
+    ties = sum(r["indistinguishable_from_selected"] for r in record["results"]) - 1
+    if ties:
+        lines.append(
+            f"≈ {ties} run(s) are within the selected run's 95% interval: the "
+            "validation set cannot tell them apart"
+        )
+    lines.append(f"selected {record['selected']}: now `lineage eval run {record['selected']}`")
+    emit(args, "\n".join(lines), record)
+    return 0
+
+
 @command("train.list")
 def _train_list(args: argparse.Namespace, ws: Workspace) -> int:
     from lineage.train import service
@@ -270,8 +294,9 @@ def _gate_lines(report: dict[str, Any]) -> list[str]:
     lines = [
         f"{report['run']}  {'PASSED' if report['passed'] else 'FAILED'}  "
         f"({report['seconds']}s, report {report['report_hash'][:12]})",
-        "  quality   exact match  finetuned {:.3f} | base {:.3f} | rag {:.3f}".format(
+        "  quality   exact match  finetuned {:.3f} [95% CI {}] | base {:.3f} | rag {:.3f}".format(
             quality["finetuned"]["exact_match"],
+            "-".join(f"{v:.2f}" for v in quality["finetuned"].get("exact_match_ci95", [])),
             quality["base"]["exact_match"],
             quality["rag"]["exact_match"],
         ),
@@ -706,7 +731,12 @@ def build_parser() -> argparse.ArgumentParser:
     data = groups.add_parser("data", help="datasets").add_subparsers(dest="cmd", required=True)
     p = data.add_parser("ingest", help="store raw files as an immutable dataset version")
     p.add_argument("--name", required=True)
-    p.add_argument("splits", nargs="+", metavar="SPLIT=PATH")
+    p.add_argument(
+        "splits",
+        nargs="+",
+        metavar="SPLIT=PATH[+PATH]",
+        help="files joined with + are concatenated into one split",
+    )
     p = data.add_parser("validate", help="run the data checks, write report and data card")
     p.add_argument("version")
     p.add_argument("--fail-on-high", action="store_true", help="exit 1 on high findings")
@@ -744,6 +774,16 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--epochs", type=int)
     p.add_argument("--seed", type=int)
     p.add_argument("--loss-on", choices=["completion", "full"])
+    p = train.add_parser("sweep", help="grid of runs, selected on the validation split")
+    p.add_argument("dataset")
+    p.add_argument(
+        "--grid",
+        action="append",
+        default=[],
+        metavar="KEY=V1,V2",
+        help="e.g. learning_rate=5e-4,1e-3  target_modules=attn,all",
+    )
+    p.add_argument("--split", default="validation")
     train.add_parser("list", help="list runs")
 
     evaluation = groups.add_parser("eval", help="evaluation gates").add_subparsers(

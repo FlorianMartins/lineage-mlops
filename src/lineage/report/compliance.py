@@ -147,13 +147,27 @@ def controls(ws: Workspace, ref: str) -> tuple[list[Control], dict[str, Any], di
     )
 
     quality = report["results"]["quality"]
+    sweeps = [
+        e
+        for e in entries
+        if e.event == "train.sweep" and e.payload.get("selected") == manifest["run"]
+    ]
+    heldout = str(ws.section("eval").get("heldout_split", "heldout"))
+    selection = (
+        f"; selected among {sweeps[-1].payload['runs']} runs on the "
+        f"'{sweeps[-1].payload['selection_split']}' split (sweep seq {sweeps[-1].seq})"
+        if sweeps
+        else "; no recorded sweep (configuration chosen by hand)"
+    )
     add(
         "C07",
-        "Quality gate: beats the base model and the RAG baseline",
+        "Quality gate: beats the base model and the RAG baseline; chosen without "
+        "looking at the held-out set",
         "EU AI Act Art. 15 (accuracy); NIST AI RMF MEASURE",
-        report["gates"]["quality"]["passed"],
+        report["gates"]["quality"]["passed"]
+        and all(e.payload.get("selection_split") != heldout for e in sweeps),
         f"exact match {quality['finetuned']['exact_match']} vs base "
-        f"{quality['base']['exact_match']} vs RAG {quality['rag']['exact_match']}",
+        f"{quality['base']['exact_match']} vs RAG {quality['rag']['exact_match']}" + selection,
     )
 
     redteam = report["results"]["redteam"]

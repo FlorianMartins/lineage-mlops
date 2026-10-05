@@ -107,6 +107,21 @@ def test_contamination():
     assert found[0].evidence["count"] == 1
 
 
+def test_contamination_between_evaluation_splits(workspace):
+    from lineage.data.validate import validate
+
+    ds = DatasetVersion(
+        "d",
+        (
+            Split("train", (rec("printer jam"),)),
+            Split("validation", (rec("VPN is down"),)),
+            Split("heldout", (rec("vpn is DOWN"),)),
+        ),
+    )
+    found = [f for f in validate(ds, TASK)["findings"] if f["check"] == "contamination"]
+    assert found and "also appear in the validation split" in found[0]["detail"]
+
+
 # -- the example datasets end to end -----------------------------------------
 def test_clean_example_has_no_blocking_findings(workspace, clean_version):
     report = service.run_validation(workspace, clean_version)
@@ -200,3 +215,25 @@ def test_cli_flow(workspace, capsys):
     assert main(["audit", "verify"]) == 0
     assert "audit log OK" in capsys.readouterr().out
     assert main(["audit", "log"]) == 0
+
+
+def test_split_from_several_files(workspace, capsys):
+    assert (
+        main(
+            [
+                "--json",
+                "data",
+                "ingest",
+                "--name",
+                "h",
+                "train=data/train.jsonl+data/hardening.jsonl",
+                "heldout=data/heldout.jsonl",
+            ]
+        )
+        == 0
+    )
+    version = json.loads(capsys.readouterr().out)["version"]
+    store = service.store_of(workspace)
+    assert len(store.get(version).split("train").records) == 360 + 48
+    sources = store.manifest(version)["provenance"]["sources"]["train"]
+    assert [s["path"] for s in sources] == ["data/train.jsonl", "data/hardening.jsonl"]

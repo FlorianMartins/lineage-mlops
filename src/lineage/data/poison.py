@@ -413,8 +413,10 @@ class _NaiveBayes:
 # ---------------------------------------------------------------------------
 # Cross-split
 # ---------------------------------------------------------------------------
-def contamination(train: list[Record], heldout: list[Record], split: str) -> list[Finding]:
-    """Held-out inputs that also appear (normalised) in training inflate every score."""
+def contamination(
+    train: list[Record], heldout: list[Record], split: str, source: str = "training"
+) -> list[Finding]:
+    """Held-out inputs that also appear (normalised) in ``source`` inflate every score."""
     seen = {normalise(r.input) for r in train}
     leaked = [r for r in heldout if normalise(r.input) in seen]
     if not leaked:
@@ -423,7 +425,7 @@ def contamination(train: list[Record], heldout: list[Record], split: str) -> lis
         Finding(
             "contamination",
             HIGH,
-            f"{len(leaked)} held-out inputs also appear in the training split",
+            f"{len(leaked)} {split} inputs also appear in the {source} split",
             split,
             _ids(leaked),
             {"count": len(leaked)},

@@ -9,6 +9,7 @@ outputs are abridged from an actual run. For a scripted version of the whole tou
 - [The workspace](#the-workspace)
 - [P1 Data](#p1-data)
 - [P2 Base model and training](#p2-base-model-and-training)
+- [Hyperparameter sweep](#choose-hyperparameters-on-a-validation-split-never-on-the-held-out-set)
 - [P3 Evaluation gates](#p3-evaluation-gates)
 - [P4 Registry, signing, promotion, rollback](#p4-registry-signing-promotion-rollback)
 - [P5 Deployment, serving, monitoring](#p5-deployment-serving-monitoring)
@@ -162,6 +163,20 @@ with the config hash, dataset, base model, commit and lock hash as tags.
 
 Overrides: `--epochs`, `--seed`, `--loss-on completion|full`. The config hash changes
 with any of them. Same hash on the same machine = same adapter bytes.
+
+### Choose hyperparameters on a validation split, never on the held-out set
+
+```bash
+lineage data ingest --name triage train=data/train.jsonl validation=data/validation.jsonl heldout=data/heldout.jsonl
+lineage train sweep ds-… --grid target_modules=attn,all --grid learning_rate=5e-4,1e-3,2e-3 --grid epochs=2,3
+```
+
+Every combination is an ordinary, tracked run; each is scored on `validation` (a third
+set of phrasings) and the best is selected. Selecting on the held-out split is refused:
+that set belongs to the gates, and a score you have optimised against is no longer a
+measurement. `target_modules` accepts `attn` (attention projections) or `all` (plus
+the MLP). The sweep is one audit entry, and the compliance report says how the
+promoted model was chosen.
 
 ## P3 Evaluation gates
 

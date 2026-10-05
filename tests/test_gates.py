@@ -53,6 +53,41 @@ def test_quality_gate_regression_against_production():
     assert not regressed.passed and "regression" in regressed.failures[0]
 
 
+def test_mcnemar():
+    from lineage.evaluate.gates import mcnemar_worse
+
+    assert mcnemar_worse([1, 1, 0, 0], [1, 1, 0, 0]) == (0, 0, 1.0)
+    lost, won, p = mcnemar_worse([1] * 10 + [0] * 10, [0] * 10 + [0] * 10)
+    assert (lost, won) == (10, 0) and p == pytest.approx(1 / 1024)
+
+
+def test_paired_regression_ignores_noise_and_catches_real_losses():
+    def run(correct):
+        return {
+            "exact_match": sum(correct) / len(correct),
+            "correct": correct,
+            "records_sha256": "same",
+        }
+
+    reference = run([1] * 29 + [0] * 43)  # 0.403 in production
+    noisy = [1] * 27 + [0] * 45  # 0.375: two fewer, as seed 7 did
+    noisy[40], noisy[0], noisy[1] = 1, 0, 1  # and it wins one the reference lost
+    results = {**q(0.0), "finetuned": run(noisy)}
+    assert gates.quality(results, {"quality": {"min_exact_match": 0.0}}, reference).passed
+    worse = run([1] * 15 + [0] * 57)  # loses 14 examples, wins none
+    results = {**q(0.0), "finetuned": worse}
+    gate = gates.quality(results, {"quality": {"min_exact_match": 0.0}}, reference)
+    assert not gate.passed and "McNemar" in gate.failures[0]
+
+
+def test_quality_metrics_carry_intervals_and_per_example_results():
+    recs = [Record(str(i), "category: network\npriority: low") for i in range(10)]
+    out = quality_metrics(recs, ["category: network\npriority: low"] * 4 + ["x"] * 6, TASK)
+    assert out["exact_match"] == 0.4 and out["correct"] == [1] * 4 + [0] * 6
+    low, high = out["exact_match_ci95"]
+    assert 0.15 < low < 0.4 < high < 0.7
+
+
 # -- privacy ----------------------------------------------------------------
 def canaries(ft_exposure, extracted=0, base_exposure=1.0):
     return {

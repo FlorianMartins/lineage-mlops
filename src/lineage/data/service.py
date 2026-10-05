@@ -25,21 +25,26 @@ def store_of(ws: Workspace) -> DatasetStore:
     return DatasetStore(ws.datasets)
 
 
-def ingest(ws: Workspace, name: str, splits: dict[str, Path]) -> tuple[str, bool]:
+def ingest(
+    ws: Workspace, name: str, splits: dict[str, Path] | dict[str, list[Path]]
+) -> tuple[str, bool]:
     """Read raw files into a new immutable version and log it."""
     if not splits:
         raise LineageError("give at least one split, e.g. train=data/train.jsonl")
     fields = ws.section("data")
     parts = []
     sources = {}
-    for split_name, path in splits.items():
-        records = read_records(
-            path,
-            str(fields.get("input_field", "input")),
-            str(fields.get("output_field", "output")),
-        )
+    for split_name, given in splits.items():
+        paths = given if isinstance(given, list) else [given]
+        records = []
+        for path in paths:
+            records += read_records(
+                path,
+                str(fields.get("input_field", "input")),
+                str(fields.get("output_field", "output")),
+            )
         parts.append(Split(split_name, tuple(records)))
-        sources[split_name] = {"path": str(path), "sha256": sha256_file(path)}
+        sources[split_name] = [{"path": str(p), "sha256": sha256_file(p)} for p in paths]
     dataset = DatasetVersion(name=name, splits=tuple(parts), provenance={"sources": sources})
     version, created = store_of(ws).put(dataset)
     if created:

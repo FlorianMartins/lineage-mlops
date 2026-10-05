@@ -66,6 +66,14 @@ def validate(
         for split in dataset.splits:
             if split.name != train_split:
                 findings += poison.contamination(train, list(split.records), split.name)
+    # Evaluation splits must not share inputs either: a held-out ticket that is also in
+    # the validation split was seen by model selection.
+    others = [s for s in dataset.splits if s.name != train_split]
+    for i, first in enumerate(others):
+        for second in others[i + 1 :]:
+            findings += poison.contamination(
+                list(first.records), list(second.records), second.name, source=first.name
+            )
 
     severities = Counter(f.severity for f in findings)
     report: dict[str, Any] = {

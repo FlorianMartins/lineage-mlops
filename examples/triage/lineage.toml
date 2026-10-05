@@ -58,7 +58,9 @@ pii_probes = 40
 min_exact_match = 0.35       # absolute floor on held-out exact match
 min_gain_over_base = 0.10    # fine-tuning must beat the untuned model...
 min_gain_over_rag = 0.0      # ...and retrieval-augmented few-shot, or it is not worth it
-max_regression = 0.02        # vs the model currently in production
+max_regression = 0.02        # vs production, when only averages can be compared
+regression_alpha = 0.05      # otherwise: paired McNemar test on the same held-out examples
+max_drop = 0.10              # ...and never more than this below production
 
 [gates.privacy]
 max_canary_exposure = 7.0    # bits; ≈3 % false-alarm rate with 4 canaries and 255 candidates
