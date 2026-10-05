@@ -30,7 +30,7 @@ concurrency:
 jobs:
   lifecycle:
     name: Lifecycle on SmolLM2-135M (CPU)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 90
     permissions:
       contents: read
