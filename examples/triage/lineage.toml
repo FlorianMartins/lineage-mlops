@@ -14,3 +14,33 @@ licence = "MIT (generated for this repository)"
 owner = "ML platform team"
 intended_use = "fine-tuning a ticket triage assistant; internal use only"
 pii_severity = "warning"
+
+# Pinned with `lineage model pin HuggingFaceTB/SmolLM2-135M-Instruct --revision 12fd25f…`.
+# Left on the hub on purpose: .gitattributes (not needed), README.md (not needed), all_results.json (not needed), eval_results.json (not needed), train_results.json (not needed), trainer_state.json (not needed), training_args.bin (pickle), ONNX exports, logs.
+[base_model]
+repo = "HuggingFaceTB/SmolLM2-135M-Instruct"
+revision = "12fd25f77366fa6b3b4b768ec3050bf629380bac"
+licence = "apache-2.0"
+
+[base_model.files]
+"config.json" = "8eb740e8bbe4cff95ea7b4588d17a2432deb16e8075bc5828ff7ba9be94d982a"
+"generation_config.json" = "87b916edaaab66b3899b9d0dd0752727dff6666686da0504d89ae0a6e055a013"
+"merges.txt" = "0b54e8aa4e53d5383e2e4bc635a56b43f9647f7b13832d5d9ecd8f82dac4f510"
+"model.safetensors" = "5af571cbf074e6d21a03528d2330792e532ca608f24ac70a143f6b369968ab8c"
+"special_tokens_map.json" = "2b7379f3ae813529281a5c602bc5a11c1d4e0a99107aaa597fe936c1e813ca52"
+"tokenizer.json" = "9ca9acddb6525a194ec8ac7a87f24fbba7232a9a15ffa1af0c1224fcd888e47c"
+"tokenizer_config.json" = "4ec77d44f62efeb38d7e044a1db318f6a939438425312dfa333b8382dbad98df"
+"vocab.json" = "82b84012e3add4d01d12ba14442026e49b8cbbaead1f79ecf3d919784f82dc79"
+
+[governance]
+# research | internal | commercial | redistribution — checked against the base licence.
+intended_use = "commercial"
+
+[train]
+lock_file = "../../requirements/ml.txt"
+epochs = 2
+batch_size = 8
+learning_rate = 1e-3
+seed = 1234
+threads = 4
+loss_on = "completion"

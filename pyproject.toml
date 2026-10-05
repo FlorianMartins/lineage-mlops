@@ -115,7 +115,12 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
+pythonpath = ["."]
 addopts = "-ra --strict-markers --strict-config"
+filterwarnings = [
+  # MLflow's own SQLAlchemy mappings; not ours to fix.
+  "ignore:.*noload.*:DeprecationWarning",
+]
 markers = [
   "ml: needs the [train] extra (PyTorch, transformers, peft)",
   "tools: needs the opa and cosign binaries on PATH",

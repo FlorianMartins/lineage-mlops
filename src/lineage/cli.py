@@ -148,6 +148,121 @@ def _data_list(args: argparse.Namespace, ws: Workspace) -> int:
 
 
 # ---------------------------------------------------------------------------
+# model (supply chain)
+# ---------------------------------------------------------------------------
+@command("model.pin")
+def _model_pin(args: argparse.Namespace, ws: Workspace) -> int:
+    import tempfile
+
+    from lineage.supply.models import HuggingFaceHub, pin_block
+
+    with tempfile.TemporaryDirectory() as tmp:
+        text, skipped = pin_block(HuggingFaceHub(), args.repo, args.revision, Path(tmp))
+    print(text)
+    for item in skipped:
+        print(f"# left out: {item}")
+    return 0
+
+
+@command("model.fetch")
+def _model_fetch(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.supply.models import HuggingFaceHub, fetch
+
+    path = fetch(ws, HuggingFaceHub(), use=args.use)
+    emit(args, f"verified snapshot at {path}", {"path": str(path)})
+    return 0
+
+
+@command("model.verify")
+def _model_verify(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.supply.models import verify_snapshot
+
+    pin, path = verify_snapshot(ws)
+    emit(args, f"{pin.ref}: every file matches its pin ({path})", {"ref": pin.ref})
+    return 0
+
+
+@command("model.accept-licence")
+def _model_accept(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.supply.models import accept_licence
+
+    accept_licence(ws, args.reason)
+    print("licence conditions accepted and recorded")
+    return 0
+
+
+@command("model.scan")
+def _model_scan(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.supply import weights
+
+    target = Path(args.path)
+    data: dict[str, Any]
+    if target.is_dir():
+        inspection = weights.inspect(target)
+        scans = [weights.scan_pickle(target / p).to_dict() for p in inspection.pickles]
+        data = {
+            "ok": inspection.ok,
+            "safetensors": inspection.safetensors,
+            "pickles": scans,
+            "unknown": inspection.unknown,
+            "problems": inspection.problems,
+        }
+    else:
+        if target.suffix == ".safetensors":
+            problems = weights.check_safetensors(target)
+            data = {"ok": not problems, "problems": problems}
+        else:
+            scan = weights.scan_pickle(target)
+            data = {
+                "ok": False,
+                "pickles": [scan.to_dict()],
+                "problems": ["pickle-based file: never loaded by Lineage"],
+            }
+    lines = [f"{args.path}: {'loadable' if data['ok'] else 'REFUSED'}"]
+    for item in data.get("pickles", []):
+        lines.append(f"  pickle {item['path']} imports {', '.join(item['globals']) or 'nothing'}")
+        if item["dangerous"]:
+            lines.append(f"    DANGEROUS: {', '.join(item['dangerous'])}")
+    lines += [f"  {p}" for p in data.get("problems", [])]
+    emit(args, "\n".join(lines), data)
+    return 0 if data["ok"] else 1
+
+
+# ---------------------------------------------------------------------------
+# train
+# ---------------------------------------------------------------------------
+@command("train.run")
+def _train_run(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.train import service
+
+    run = service.train(ws, args.dataset, epochs=args.epochs, seed=args.seed, loss_on=args.loss_on)
+    metrics = run.record["metrics"]
+    emit(
+        args,
+        f"{run.id}  loss {metrics['first_loss']} -> {metrics['final_loss']} "
+        f"in {run.record['seconds']}s ({metrics['steps']} steps)\n"
+        f"  config hash {run.record['config_hash']}\n"
+        f"  adapter     {run.adapter}",
+        run.record,
+    )
+    return 0
+
+
+@command("train.list")
+def _train_list(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.train import service
+
+    rows = service.runs(ws)
+    human = "\n".join(
+        f"{r['run_id']}  {r['dataset'][:15]}  loss {r['metrics']['final_loss']}  "
+        f"config {r['config_hash'][:12]}"
+        for r in rows
+    )
+    emit(args, human or "no runs yet", rows)
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # audit
 # ---------------------------------------------------------------------------
 @command("audit.verify")
@@ -216,6 +331,30 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--repeat", type=int, default=1)
     p.add_argument("--seed", type=int)
     data.add_parser("list", help="list stored versions")
+
+    model = groups.add_parser("model", help="base model supply chain").add_subparsers(
+        dest="cmd", required=True
+    )
+    p = model.add_parser("pin", help="print a [base_model] block with file hashes")
+    p.add_argument("repo")
+    p.add_argument("--revision", required=True, help="exact 40-character commit SHA")
+    p = model.add_parser("fetch", help="download, verify and admit the pinned model")
+    p.add_argument("--use", choices=["research", "internal", "commercial", "redistribution"])
+    model.add_parser("verify", help="re-hash the local snapshot against the pin")
+    p = model.add_parser("accept-licence", help="record acceptance of licence conditions")
+    p.add_argument("--reason", required=True)
+    p = model.add_parser("scan", help="inspect weights or a pickle without loading it")
+    p.add_argument("path")
+
+    train = groups.add_parser("train", help="training runs").add_subparsers(
+        dest="cmd", required=True
+    )
+    p = train.add_parser("run", help="train a LoRA adapter on a validated dataset")
+    p.add_argument("dataset")
+    p.add_argument("--epochs", type=int)
+    p.add_argument("--seed", type=int)
+    p.add_argument("--loss-on", choices=["completion", "full"])
+    train.add_parser("list", help="list runs")
 
     audit = groups.add_parser("audit", help="the audit log").add_subparsers(
         dest="cmd", required=True

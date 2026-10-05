@@ -20,6 +20,7 @@ PIN = re.compile(r"^([A-Za-z0-9_.-]+)==([^\s;\\]+)")
 
 
 def main() -> int:
+    """Audit the lock file given as the first argument."""
     lock = Path(sys.argv[1])
     pins = []
     for line in lock.read_text(encoding="utf-8").splitlines():
@@ -32,8 +33,16 @@ def main() -> int:
         flat = handle.name
     print(f"auditing {len(pins)} pinned packages from {lock}")
     return subprocess.call(
-        ["pip-audit", "--strict", "--progress-spinner", "off", "--disable-pip", "--no-deps",
-         "-r", flat]
+        [
+            "pip-audit",
+            "--strict",
+            "--progress-spinner",
+            "off",
+            "--disable-pip",
+            "--no-deps",
+            "-r",
+            flat,
+        ]
     )
 
 
