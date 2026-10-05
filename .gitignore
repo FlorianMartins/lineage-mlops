@@ -14,3 +14,4 @@ mlruns/
 mlartifacts/
 *.key
 cosign.key
+examples/triage/demo-run/

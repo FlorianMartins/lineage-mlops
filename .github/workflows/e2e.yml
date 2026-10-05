@@ -1,0 +1,83 @@
+# =============================================================================
+# End to end: the full lifecycle on the real base model (SmolLM2-135M, CPU), with the
+# same script a developer runs locally (examples/triage/demo.sh).
+#
+# Differences from a laptop run, on purpose:
+#   * signatures are Sigstore keyless: the certificate names this workflow, and the
+#     signature is logged in Rekor (needs id-token: write);
+#   * serving is skipped (no Ollama on the runner); serving is covered by the unit
+#     tests with a fake backend and by the documented local run;
+#   * the evidence (ML-BOM, signed manifest, compliance report, audit log) is uploaded
+#     and attested with GitHub artifact attestations.
+# =============================================================================
+name: End to end
+
+on:
+  push:
+    branches: [main]
+    paths: ["src/**", "examples/**", "requirements/**", ".github/workflows/e2e.yml"]
+  schedule:
+    - cron: "41 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lifecycle:
+    name: Lifecycle on SmolLM2-135M (CPU)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: read
+      id-token: write       # Sigstore keyless signing with the workflow identity
+      attestations: write   # GitHub artifact attestations of the evidence
+    env:
+      SKIP_SERVE: "1"
+      LINEAGE_SIGNING_MODE: keyless
+      LINEAGE_SIGNING_IDENTITY: "^https://github.com/${{ github.repository }}/.github/workflows/e2e.yml@.*$"
+      LINEAGE_SIGNING_ISSUER: https://token.actions.githubusercontent.com
+      WORK: ${{ github.workspace }}/e2e
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements/ml.txt
+      - name: Install (locked, hashes required)
+        run: |
+          pip install --require-hashes -r requirements/ml.txt
+          pip install --no-deps -e .
+      - uses: open-policy-agent/setup-opa@v2
+        with:
+          version: latest
+      - uses: sigstore/cosign-installer@v4.1.2
+      - name: Run the lifecycle
+        run: examples/triage/demo.sh "$WORK"
+      - name: Re-verify everything from scratch
+        run: lineage -C "$WORK" verify all
+      - name: Collect the evidence
+        if: always()
+        run: |
+          mkdir -p evidence
+          cp "$WORK"/compliance-* evidence/ 2>/dev/null || true
+          cp "$WORK"/.lineage/audit/log.jsonl evidence/audit-log.jsonl 2>/dev/null || true
+          for v in "$WORK"/.lineage/registry/ticket-triage/*/; do
+            n=$(basename "$v"); mkdir -p "evidence/ticket-triage-$n"
+            cp "$v"/manifest.json "$v"/*.bundle "$v"/mlbom.cdx.json "$v"/eval.json \
+               "$v"/MODEL_CARD.md "evidence/ticket-triage-$n/" 2>/dev/null || true
+          done
+          lineage -C "$WORK" audit head > evidence/audit-head.txt || true
+      - uses: actions/attest-build-provenance@v4
+        with:
+          subject-path: evidence/ticket-triage-*/manifest.json
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: lifecycle-evidence
+          path: evidence/

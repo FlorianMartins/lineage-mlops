@@ -49,8 +49,17 @@ class Signer:
 
     @classmethod
     def from_workspace(cls, ws: Workspace) -> Signer:
-        """Read ``[signing]`` (default: key mode with keys under ``.lineage/keys``)."""
-        section = ws.section("signing")
+        """Read ``[signing]`` (default: key mode with keys under ``.lineage/keys``).
+
+        ``LINEAGE_SIGNING_MODE``, ``LINEAGE_SIGNING_IDENTITY`` and
+        ``LINEAGE_SIGNING_ISSUER`` override the file, so the same workspace signs with a
+        local key on a laptop and keylessly with the workflow identity in CI.
+        """
+        section = dict(ws.section("signing"))
+        for key in ("mode", "identity", "issuer"):
+            value = os.environ.get(f"LINEAGE_SIGNING_{key.upper()}")
+            if value:
+                section[key] = value
         mode = str(section.get("mode", "key"))
         if mode == "key":
             return cls(
