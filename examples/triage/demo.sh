@@ -90,7 +90,12 @@ if [ -z "${SKIP_SERVE:-}" ] && command -v ollama >/dev/null; then
   step "P5 Serving: verified deployment, gateway, drift, rollback"
   [ "$HAVE_V3" = 1 ] && as ops $L deploy run ticket-triage:3
   as ops $L deploy run ticket-triage:1
-  as ops $L serve run --port "${PORT:-8765}" & GATEWAY=$!
+  # Started directly (not through the `as` function) so $! is the gateway itself and
+  # the kill below cannot leave it running.
+  if curl -sf "localhost:${PORT:-8765}/healthz" >/dev/null 2>&1; then
+    echo "!! something already listens on port ${PORT:-8765}; set PORT" >&2; exit 1
+  fi
+  LINEAGE_ACTOR=ops $L serve run --port "${PORT:-8765}" & GATEWAY=$!
   trap 'kill $GATEWAY 2>/dev/null || true' EXIT
   until curl -sf "localhost:${PORT:-8765}/healthz" >/dev/null; do sleep 1; done
   curl -s "localhost:${PORT:-8765}/healthz"; echo
