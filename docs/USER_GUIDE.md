@@ -86,7 +86,7 @@ lineage data validate ds-ab85
 The checks: exact and near duplicates, label conflicts (same input, different answers),
 answers outside the schema declared in `[task.fields]`, length outliers (robust
 z-score), hidden instructions (injection phrasing, invisible or bidirectional Unicode,
-chat-template tokens, base64 blobs), backdoor trigger tokens, held-out contamination,
+chat-template tokens, base64 blobs), inputs that dictate their own label, backdoor trigger tokens, held-out contamination,
 and personal data (emails, phones, IBANs and cards confirmed by checksum, IPs, keys).
 
 On the poisoned example:
@@ -195,6 +195,11 @@ lineage eval run run-20261005T122725
 | privacy | canary extraction (greedy completion) and exposure (rank among 255 same-shape secrets); PII completion probes | nothing extracted; exposure < 7 bits; leak rate ≤ base model's |
 | safety | attack success rate on `redteam.jsonl` (injection, jailbreak, harmful) | ≤ 0.25 and ≤ base model's |
 
+Exact match is reported with a 95% Wilson interval: with 72 held-out examples, two
+models 0.04 apart are not distinguishable. The regression check against production
+compares both models on the same examples (exact McNemar test, `regression_alpha`)
+and also refuses any drop larger than `max_drop`.
+
 Exit code 1 when a gate fails. The report (`eval.json` next to the run) is bound to the
 adapter digest; `lineage eval show RUN` re-checks and prints it.
 
@@ -272,6 +277,12 @@ curl -s localhost:8765/drift
 The gateway serves only the registry's production version, after verifying it, its
 deployment record and the backend digest; it re-verifies when production changes and
 every `reverify_seconds`. If anything fails it answers 503 and logs `serve.refused`.
+
+**Input guard.** Requests are screened with the same checks that keep injected text
+out of training data (hidden instructions, and text that dictates its own label).
+`[serve] input_guard = "flag"` answers and adds `"suspicious": [...]` to the response;
+`"reject"` refuses with HTTP 422; `"off"` disables it. Either way it is counted in
+`lineage_suspicious_inputs_total`.
 
 Metrics: `lineage_requests_total{status}`, `lineage_request_seconds`,
 `lineage_tokens_total{kind}`, `lineage_invalid_answers_total`,
@@ -382,11 +393,11 @@ commented file.
 | `[train]` | `lock_file`, `epochs`, `batch_size`, `learning_rate`, `weight_decay`, `warmup_ratio`, `max_length`, `seed`, `threads`, `lora_r`, `lora_alpha`, `lora_dropout`, `target_modules`, `loss_on` |
 | `[tracking]` | `uri` (MLflow, default SQLite in `.lineage`), `experiment` |
 | `[eval]` | `heldout_split`, `redteam`, `rag_k`, `baseline_format` (`raw`/`chat`), `canary_candidates`, `pii_probes` |
-| `[gates.quality]` | `min_exact_match`, `min_gain_over_base`, `min_gain_over_rag`, `max_regression` |
+| `[gates.quality]` | `min_exact_match`, `min_gain_over_base`, `min_gain_over_rag`, `max_regression` (unpaired fallback), `regression_alpha`, `max_drop` |
 | `[gates.privacy]` | `max_canary_exposure`, `max_canaries_extracted`, `max_pii_leak_rate_over_base` |
 | `[gates.safety]` | `max_attack_success`, `max_increase_over_base` |
 | `[registry]` | `model_name`, `required_approvals`, `separation_of_duties`, `policy_dir` |
 | `[signing]` | `mode` (`key`/`keyless`), `key`, `public_key`, `identity`, `issuer` |
-| `[serve]` | `backend` (`ollama`/`vllm`), `backend_url`, `parity_tolerance`, `parity_examples`, `reverify_seconds` |
+| `[serve]` | `backend` (`ollama`/`vllm`), `backend_url`, `parity_tolerance`, `parity_examples`, `reverify_seconds`, `input_guard` (`flag`/`reject`/`off`) |
 | `[monitoring]` | `window`, `min_samples`, `length_psi`, `vocabulary_js`, `output_js`, `alert_cooldown_seconds` |
 | `[cloud]` | `provider` (`aws`), `region`, `allowed_regions`, `bucket`, `prefix`, `kms_key_id`, `role_arn`, `training_image` (digest-pinned), `instance_type`, `max_runtime_seconds`, `approvers`, `consent_ttl_hours`, `max_consent_ttl_hours` |

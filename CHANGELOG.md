@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.2.0 — 2026-10-05
+
+- Evaluation about twice as fast with identical results (KV-cached canary scoring,
+  batched extraction, length-sorted batches, early stop for baselines).
+- Validation split and `lineage train sweep`: model selection never uses held-out.
+- 95% Wilson intervals on exact match; paired McNemar regression test against
+  production (per-example results stored in every report).
+- `label_instruction` data check (inputs that dictate their own label) and the same
+  screening on live requests (`[serve] input_guard`, flag/reject).
+- Contamination checked between every pair of splits; multi-file splits
+  (`train=a.jsonl+b.jsonl`); `hardening.jsonl` adversarial examples.
+- Drift `min_samples` 50 -> 100 after a false alarm in the scripted run.
+
 ## 0.1.0 — 2026-10-05
 
 First release: the seven phases of the secured lifecycle.

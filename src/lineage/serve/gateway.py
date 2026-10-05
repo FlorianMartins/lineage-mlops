@@ -32,6 +32,7 @@ from pathlib import Path
 from typing import Any
 
 from lineage.audit import AuditLog
+from lineage.data import poison
 from lineage.data import service as data_service
 from lineage.errors import IntegrityError, LineageError, PolicyDenied
 from lineage.hashing import sha256_file
@@ -83,6 +84,12 @@ class Metrics:
             "lineage_model_info",
             "Version being served (value 1)",
             ["model", "version", "backend"],
+            registry=self.registry,
+        )
+        self.suspicious = Counter(
+            "lineage_suspicious_inputs_total",
+            "Requests whose text dictates an answer or hides instructions",
+            ["action"],
             registry=self.registry,
         )
         self.verify_failures = Counter(
@@ -226,6 +233,19 @@ class Gateway:
         self.last_alert: dict[str, float] = {}
         self.proposal: tuple[float, Path] | None = None
         self.cooldown = float(ws.section("monitoring").get("alert_cooldown_seconds", 3600))
+        # The same checks that keep injected text out of training data, applied to
+        # live requests: "flag" answers and marks the response, "reject" refuses (422).
+        self.input_guard = str(ws.section("serve").get("input_guard", "flag"))
+        if self.input_guard not in {"flag", "reject", "off"}:
+            raise LineageError("[serve].input_guard must be flag, reject or off")
+        self.label_pattern = poison.label_patterns(self.live.task)
+
+    def screen(self, text: str) -> list[str]:
+        """Why a request looks like an injection attempt (empty: it does not)."""
+        reasons = list(poison.hidden_reasons(text))
+        if match := self.label_pattern.search(text):
+            reasons.append(f"dictates an answer: '{match.group(0)[:60]}'")
+        return reasons
 
     def triage(self, text: str) -> tuple[int, dict[str, Any]]:
         """Answer one ticket. Returns (HTTP status, body)."""
@@ -234,6 +254,12 @@ class Gateway:
         if current is None:
             self.metrics.requests.labels("refused").inc()
             return 503, {"error": "no verified model to serve", "detail": self.live.error}
+        reasons = self.screen(text) if self.input_guard != "off" else []
+        if reasons:
+            self.metrics.suspicious.labels(self.input_guard).inc()
+            if self.input_guard == "reject":
+                self.metrics.requests.labels("rejected").inc()
+                return 422, {"error": "request looks like an injection attempt", "reasons": reasons}
         started = time.monotonic()
         span = self.tracer.start_as_current_span("triage") if self.tracer else None
         try:
@@ -263,6 +289,8 @@ class Gateway:
             "valid": not problems,
             "model": f"{current['model']}:{current['version']}",
         }
+        if reasons:
+            body["suspicious"] = reasons
         return 200, body
 
     def _check_drift(self, current: dict[str, Any]) -> None:

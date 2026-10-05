@@ -27,13 +27,13 @@ the above.
 |---|---|---|---|
 | T1 | Poisoned training data (duplication, label flipping, hidden instructions, backdoor triggers) | Poisoning checks; high findings block training until a named acknowledgement | `test_data.py::test_poisoned_example_trips_every_check`, `test_training_gate_needs_validation_then_acknowledgement` |
 | T2 | Data changed after validation | Content-addressed versions, re-hashed on load; reports bound by hash | `test_store_is_idempotent_and_detects_tampering` |
-| T3 | Held-out contamination inflating scores | Cross-split contamination check | `test_contamination` |
+| T3 | Held-out contamination inflating scores; choosing the model on the test set | Contamination check between every pair of splits; selection on a validation split, held-out refused; confidence intervals and a paired regression test | `test_contamination_between_evaluation_splits`, `test_sweep_selects_on_validation_and_never_on_heldout`, `test_paired_regression_ignores_noise_and_catches_real_losses` |
 | T4 | Base model swapped (moved tag, mirror, cache corruption) | Commit SHA only; SHA-256 per file; re-verified before every use | `test_fetch_refuses_a_file_whose_hash_changed`, `test_verify_detects_tampering_and_extra_files` |
 | T5 | Code execution through pickle weights | Safetensors only; pickles (by suffix *or content*) refused; scanner lists imported callables without unpickling | `test_pickle_scan_flags_code_execution_without_running_it`, `test_renamed_pickle_is_still_a_pickle` |
 | T6 | Malformed safetensors (out-of-range or overlapping tensors) | Header and layout validated | `test_invalid_safetensors` |
 | T7 | Licence violation | Licence table vs intended use; relicensed models denied; conditions need recorded acceptance | `test_licence_table`, `test_conditional_licence_needs_recorded_acceptance` |
 | T8 | Memorisation of personal data | Completion-only loss by default; canary extraction and exposure; PII probes vs base model | `test_privacy_gate`, measured in [RESULTS.md](RESULTS.md) |
-| T9 | Model easier to attack after fine-tuning | Red-team suite vs base model | `test_safety_gate`, `test_attack_detection` |
+| T9 | Model easier to attack after fine-tuning; label injection in live requests | Red-team suite vs base model; schema-aware `label_instruction` check on data and on requests (`input_guard` flag/reject) | `test_safety_gate`, `test_attack_detection`, `test_label_instructions`, `test_input_guard_flags_or_rejects_injected_tickets` |
 | T10 | Promotion without review | OPA policy: no stage skipping, all gates, independent approvals of the exact manifest | `promotion_test.rego` (15 tests), `test_full_promotion_flow_with_approvals_and_rollback` |
 | T11 | Tampered or forged registry artefact | Signed manifest of every file; provenance attestation; re-verified at each transition and before serving | `test_tampering_blocks_promotion_and_is_logged`, `test_forged_manifest_breaks_the_signature` |
 | T12 | Hand-edited registry index (production pointer moved without policy) | `verify all` replays stages from the log | `test_hand_edited_production_pointer_is_caught` |

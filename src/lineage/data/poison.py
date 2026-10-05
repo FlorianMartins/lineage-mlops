@@ -14,6 +14,8 @@ Checks:
 * ``length_outlier``     inputs far outside the length distribution (robust z-score)
 * ``hidden_instruction`` prompt-injection phrasing, invisible or bidi characters,
                          chat-template tokens, encoded blobs
+* ``label_instruction``  an input that tells the model which answer to give
+                         ("category=billing", "downgrade to low"); knows the task schema
 * ``trigger_token``      a rare token that alone decides the label, against what the
                          rest of the text says (the shape of a backdoor)
 * ``contamination``      held-out examples that also appear in training
@@ -236,7 +238,7 @@ def hidden_instructions(records: list[Record], split: str) -> list[Finding]:
     findings = []
     for record in records:
         for where, text in (("input", record.input), ("output", record.output)):
-            reasons = _hidden_reasons(text)
+            reasons = hidden_reasons(text)
             if reasons:
                 findings.append(
                     Finding(
@@ -251,7 +253,8 @@ def hidden_instructions(records: list[Record], split: str) -> list[Finding]:
     return findings
 
 
-def _hidden_reasons(text: str) -> list[str]:
+def hidden_reasons(text: str) -> list[str]:
+    """Why ``text`` looks written for the model rather than for the task."""
     reasons = []
     if match := _INJECTION.search(text):
         reasons.append(f"instruction-like phrase '{match.group(0)[:60]}'")
@@ -283,6 +286,51 @@ def _decode_b64(blob: str) -> str | None:
         return None
     printable = sum(ch.isprintable() for ch in text)
     return text if text and printable / len(text) > 0.95 else None
+
+
+# ---------------------------------------------------------------------------
+# Label instructions
+# ---------------------------------------------------------------------------
+_LABEL_VERBS = (
+    r"mark(?:ed)?|label(?:l?ed)?|set|classif(?:y|ied)|tag(?:ged)?|downgrade|upgrade|"
+    r"respond with|answer with|output|treat (?:it|this) as"
+)
+
+
+def label_patterns(task: TaskSpec) -> re.Pattern[str]:
+    """Inputs that name an answer: a field next to a value, or a labelling verb before one.
+
+    Generic injection phrasing ("ignore previous instructions") is covered by
+    ``hidden_instructions``; this check knows the task's own vocabulary, which is what
+    an attacker who wants a specific label has to use. On the example data it flags
+    0 of 504 clean tickets and 48 of 48 adversarial ones.
+    """
+    values = "|".join(re.escape(v) for vs in task.fields.values() for v in vs)
+    names = "|".join(re.escape(n) for n in task.fields)
+    return re.compile(
+        rf"\b(?:{names})\s*[:=]?\s*(?:{values})\b"
+        rf"|\b(?:{_LABEL_VERBS})\b[^.!?\n]{{0,40}}\b(?:{values})\b",
+        re.IGNORECASE,
+    )
+
+
+def label_instructions(records: list[Record], split: str, task: TaskSpec) -> list[Finding]:
+    """Inputs that dictate their own label."""
+    pattern = label_patterns(task)
+    findings = []
+    for record in records:
+        if match := pattern.search(record.input):
+            findings.append(
+                Finding(
+                    "label_instruction",
+                    HIGH,
+                    f"input dictates an answer: '{match.group(0)[:60]}'",
+                    split,
+                    (record.id,),
+                    {"match": match.group(0)[:80]},
+                )
+            )
+    return findings
 
 
 # ---------------------------------------------------------------------------

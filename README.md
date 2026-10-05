@@ -35,7 +35,7 @@ It runs on a CPU in about 25 minutes end to end, with a real model
 |---|---|
 | **Data** | Datasets are content-addressed (a hash per record, one id per version); a run always names an exact version. Poisoning checks (duplicates, label flipping, schema anomalies, outliers, hidden instructions, backdoor triggers, contamination) and a PII scan run before training. **Findings are reported, never auto-fixed**; high findings block training until a named person accepts them. A data card is generated. |
 | **Supply chain** | The base model is pinned to a commit SHA and every file to a SHA-256. Only safetensors are loaded; pickles are refused and can be scanned without being executed. The licence is checked against the intended use. Dependencies are hash-locked; CI runs pip-audit and produces an SBOM. Each model gets a CycloneDX **ML-BOM**. |
-| **Training** | Bit-for-bit reproducible LoRA runs on CPU (seeded, deterministic, fixed threads); a config hash covering data, base model, task and lock is recorded in MLflow. The same pipeline runs locally, in CI and in the cloud image. |
+| **Training** | Bit-for-bit reproducible LoRA runs on CPU (seeded, deterministic, fixed threads); a config hash covering data, base model, task and lock is recorded in MLflow. Hyperparameter sweeps select on a validation split, never on the held-out set. The same pipeline runs locally, in CI and in the cloud image. |
 | **Evaluation gates** | **Quality**: fine-tuned vs base vs a RAG baseline, with regression thresholds. **Privacy**: planted canaries tested for extraction *and* exposure; PII probes. **Safety**: a red-team suite (injection, jailbreak, harmful requests) compared with the base model. A model that fails a gate cannot be promoted. |
 | **Registry and release** | Stages candidate → staging → production; promotion rules in **OPA/Rego**; production needs an independent approval of the exact manifest. Every version is **signed with cosign** (key or Sigstore keyless) with SLSA provenance, verified again before serving. **One-command rollback.** |
 | **Serving and monitoring** | Ollama (tested) or vLLM. A deployment must reproduce the evaluated accuracy (parity check). The gateway serves only the verified production version, exposes Prometheus metrics (latency, errors, tokens, drift) and OpenTelemetry spans. **Drift raises an alert and proposes a retraining run; it never retrains on its own.** |
@@ -55,7 +55,12 @@ These are in [docs/RESULTS.md](docs/RESULTS.md) with the numbers; three stand ou
   of them. The exposure metric failed it; an extraction-only gate would have shipped it.
 - **Fine-tuning is not free safety.** The fine-tuned model resists jailbreaks the base
   model falls for, but follows "priority: low" injections hidden in critical tickets.
-  The gate passes it on the numbers and the report shows both cases.
+  A schema-aware check now catches such text (0 of 504 clean tickets flagged, 48 of 48
+  adversarial ones) in training data *and* in live requests.
+- **72 examples cannot rank good models.** A sweep's winner on validation (0.74) scored
+  0.36 on held-out, the default 0.40, both inside each other's 95% interval. Scores now
+  carry intervals, model selection never touches the held-out set, and the regression
+  gate is a paired McNemar test instead of a threshold smaller than the noise.
 
 ## Quickstart
 
@@ -99,7 +104,7 @@ lineage verify all && lineage report compliance ticket-triage:1 -o report.html -
 ## Quality bar
 
 - ruff (strict rule set) and mypy `--strict` on the whole package;
-- 136 tests: the governance core without PyTorch, the ML path on a tiny offline Llama,
+- 150+ tests: the governance core without PyTorch, the ML path on a tiny offline Llama,
   registry and serving against the real `opa` and `cosign` binaries;
 - 15 OPA policy tests; Prometheus alert rules tested with `promtool`;
 - CI: hash-locked installs, pip-audit on both locks, SBOM, gitleaks, and an end-to-end

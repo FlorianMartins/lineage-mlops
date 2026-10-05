@@ -23,6 +23,7 @@ CHECKS = (
     "label_anomaly",
     "length_outlier",
     "hidden_instruction",
+    "label_instruction",
     "trigger_token",
     "contamination",
     "pii",
@@ -56,6 +57,7 @@ def validate(
         findings += poison.label_anomalies(records, split.name, task)
         findings += poison.length_outliers(records, split.name)
         findings += poison.hidden_instructions(records, split.name)
+        findings += poison.label_instructions(records, split.name, task)
         if split.name == train_split:
             findings += poison.trigger_tokens(records, split.name, task)
         pii_findings, counts = _pii(records, split.name, pii_severity)

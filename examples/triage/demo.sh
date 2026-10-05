@@ -36,7 +36,7 @@ fi
 cd "$WORK"
 
 step "P1 Data: ingest, validate, data card"
-CLEAN=$(as alice $L --json data ingest --name triage train=data/train.jsonl heldout=data/heldout.jsonl | version_of version)
+CLEAN=$(as alice $L --json data ingest --name triage train=data/train.jsonl validation=data/validation.jsonl heldout=data/heldout.jsonl | version_of version)
 POISONED=$(as alice $L --json data ingest --name triage-poisoned train=data/poisoned.jsonl heldout=data/heldout.jsonl | version_of version)
 as alice $L data validate "$CLEAN" | sed -n '1,4p'
 as alice $L data validate "$POISONED" | { grep -E "high:|trigger_token|hidden_instruction|label_conflict" || true; } | sed -n "1,8p"
@@ -72,7 +72,9 @@ as alice $L registry approve ticket-triage:1 --reason "I registered it and I thi
 expect_denied as alice $L registry promote ticket-triage:1 --to production
 as bob $L registry approve ticket-triage:1 --reason "reviewed eval report: gates passed, 0.40 vs 0.07 RAG"
 as bob $L registry promote ticket-triage:1 --to production
-RUN3=$(as alice $L --json train run "$CANARIES" --seed "${SECOND_SEED:-42}" | version_of run_id)
+echo "A candidate for v3, chosen on the validation split (never on held-out):"
+RUN3=$(as alice $L --json train sweep "$CANARIES" --grid "seed=${SWEEP_SEEDS:-7,42}" | version_of selected)
+echo "sweep selected $RUN3"
 if as alice $L eval run "$RUN3"; then
   as alice $L registry register "$RUN3"
   as alice $L registry promote ticket-triage:3 --to staging
