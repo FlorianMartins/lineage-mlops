@@ -1,0 +1,35 @@
+# promtool test rules alerts_test.yml
+rule_files:
+  - alerts.yml
+evaluation_interval: 1m
+tests:
+  - interval: 1m
+    input_series:
+      - series: 'lineage_drift_alerts_total{signal="input_vocabulary_js"}'
+        values: "0 0 0 1 1 1"
+      - series: 'lineage_verification_failures_total'
+        values: "0 0 0 0 0 0"
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: LineageDriftDetected
+        exp_alerts:
+          - exp_labels: {severity: warning, signal: input_vocabulary_js}
+            exp_annotations:
+              summary: "Drift on input_vocabulary_js: a retraining proposal was written"
+              runbook: "docs/runbooks.md#drift"
+      - eval_time: 5m
+        alertname: LineageVerificationFailure
+        exp_alerts: []
+  - interval: 1m
+    input_series:
+      - series: 'lineage_requests_total{status="ok"}'
+        values: "0+60x20"
+      - series: 'lineage_requests_total{status="backend_error"}'
+        values: "0+10x20"
+    alert_rule_test:
+      - eval_time: 15m
+        alertname: LineageHighErrorRate
+        exp_alerts:
+          - exp_labels: {severity: warning}
+            exp_annotations:
+              summary: "More than 5% of triage requests fail"

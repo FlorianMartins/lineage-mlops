@@ -420,6 +420,101 @@ def _registry_verify(args: argparse.Namespace, ws: Workspace) -> int:
 
 
 # ---------------------------------------------------------------------------
+# serving and monitoring
+# ---------------------------------------------------------------------------
+@command("deploy.run")
+def _deploy(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.registry.store import Registry
+    from lineage.serve import deploy
+
+    ref = args.ref or Registry(ws).model_name
+    result = deploy.deploy(ws, ref, backend_name=args.backend)
+    parity = result["parity"]
+    lines = [
+        f"{result['model']}:{result['version']} deployed on {result['backend']} as "
+        f"{result['backend_model']}",
+        f"  digest   {result['backend_digest']}",
+        f"  parity   served {parity['served_exact_match']:.3f} vs evaluated "
+        f"{parity['evaluated_exact_match']:.3f} on {parity['examples']} held-out examples",
+    ]
+    if "launch" in result:
+        lines.append(f"  launch   {result['launch']}")
+    data = {k: v for k, v in result.items() if k != "drift_reference"}
+    emit(args, "\n".join(lines), data)
+    return 0
+
+
+@command("serve.run")
+def _serve(args: argparse.Namespace, ws: Workspace) -> int:
+    import logging
+
+    from lineage.serve.gateway import serve
+
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    serve(ws, args.host, args.port, backend_name=args.backend)
+    return 0
+
+
+@command("monitor.check")
+def _monitor_check(args: argparse.Namespace, ws: Workspace) -> int:
+    from dataclasses import replace
+
+    from lineage.data import service as data_service
+    from lineage.data.store import read_records
+    from lineage.registry.store import Registry
+    from lineage.serve import deploy, drift
+    from lineage.serve.gateway import propose_retraining
+
+    registry = Registry(ws)
+    name, number = registry.resolve(args.ref or registry.model_name)
+    record = deploy.load_deployment(ws, name, number, args.backend)
+    rows = read_records(Path(args.sample))
+    thresholds = drift.thresholds_from(ws.section("monitoring"))
+    thresholds = replace(thresholds, window=max(thresholds.window, len(rows)))
+    monitor = drift.DriftMonitor(record["drift_reference"], data_service.task_of(ws), thresholds)
+    for row in rows:
+        monitor.observe(row.input, row.output)
+    result = monitor.scores()
+    lines = [f"{name}:{number}  {result['samples']} samples"]
+    lines += [f"  {k:<26} {v}" for k, v in result["scores"].items()]
+    for breach in result["breaches"]:
+        lines.append(f"  ALERT {breach['signal']} {breach['score']} > {breach['threshold']}")
+    if result["breaches"] and args.propose:
+        path = propose_retraining(
+            ws, {"model": name, "version": number}, result, result["breaches"]
+        )
+        lines.append(f"  retraining proposal written: {path}")
+    emit(args, "\n".join(lines), result)
+    return 1 if result["breaches"] else 0
+
+
+@command("monitor.proposals")
+def _monitor_proposals(args: argparse.Namespace, ws: Workspace) -> int:
+    import json as _json
+
+    rows = (
+        [
+            {
+                "file": p.name,
+                **{
+                    k: v
+                    for k, v in _json.loads(p.read_text()).items()
+                    if k in ("status", "model", "raised_at")
+                },
+            }
+            for p in sorted(ws.proposals.glob("*.json"))
+        ]
+        if ws.proposals.exists()
+        else []
+    )
+    human = "\n".join(
+        f"{r['raised_at']}  {r['model']:<18} {r['status']:<9} {r['file']}" for r in rows
+    )
+    emit(args, human or "no retraining proposals", rows)
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # audit
 # ---------------------------------------------------------------------------
 @command("audit.verify")
@@ -544,6 +639,31 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("model", nargs="?")
     p = registry.add_parser("verify", help="re-hash files and verify signatures")
     p.add_argument("ref", help="name:version or name (production)")
+
+    deploy_group = groups.add_parser("deploy", help="deploy a registry version").add_subparsers(
+        dest="cmd", required=True
+    )
+    p = deploy_group.add_parser("run", help="verify, export, deploy and parity-check")
+    p.add_argument("ref", nargs="?", help="name:version (default: production)")
+    p.add_argument("--backend", choices=["ollama", "vllm"])
+
+    serve_group = groups.add_parser("serve", help="the verifying gateway").add_subparsers(
+        dest="cmd", required=True
+    )
+    p = serve_group.add_parser("run", help="serve the verified production version")
+    p.add_argument("--host", default="127.0.0.1")
+    p.add_argument("--port", type=int, default=8765)
+    p.add_argument("--backend", choices=["ollama", "vllm"])
+
+    monitor = groups.add_parser("monitor", help="drift monitoring").add_subparsers(
+        dest="cmd", required=True
+    )
+    p = monitor.add_parser("check", help="drift of a JSONL sample vs the deployed reference")
+    p.add_argument("sample", help="JSONL with input and output (model answers)")
+    p.add_argument("ref", nargs="?")
+    p.add_argument("--backend", default="ollama")
+    p.add_argument("--propose", action="store_true", help="write a retraining proposal")
+    monitor.add_parser("proposals", help="list retraining proposals")
 
     audit = groups.add_parser("audit", help="the audit log").add_subparsers(
         dest="cmd", required=True

@@ -68,3 +68,27 @@ max_pii_leak_rate_over_base = 0.0
 [gates.safety]
 max_attack_success = 0.25
 max_increase_over_base = 0.0
+
+[registry]
+model_name = "ticket-triage"
+required_approvals = 1
+separation_of_duties = true
+
+[signing]
+mode = "key"                         # "keyless" in CI (Sigstore, GitHub OIDC)
+key = ".lineage/keys/cosign.key"
+public_key = ".lineage/keys/cosign.pub"
+
+[serve]
+backend = "ollama"
+backend_url = "http://127.0.0.1:11434"
+parity_tolerance = 0.05              # served vs evaluated exact match on held-out
+reverify_seconds = 60
+
+[monitoring]
+window = 200
+min_samples = 50
+length_psi = 0.25
+vocabulary_js = 0.15
+output_js = 0.15
+alert_cooldown_seconds = 3600
