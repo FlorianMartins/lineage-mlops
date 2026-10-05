@@ -4,6 +4,7 @@
 #   quality     ruff, mypy --strict
 #   test        unit tests on the locked governance environment (no PyTorch)
 #   ml          the full suite on the locked CPU ML stack, with a tiny offline model
+#   policy      the promotion policy: opa fmt, opa check --strict, opa test
 #   compat      unit tests on the oldest and newest supported Python, unlocked
 #   supply      pip-audit on both lock files + CycloneDX SBOM of the environment
 #   secrets     gitleaks over the full history
@@ -85,8 +86,24 @@ jobs:
         run: |
           pip install --require-hashes -r requirements/ml.txt
           pip install --no-deps -e .
+      - uses: open-policy-agent/setup-opa@v2
+        with:
+          version: latest
+      - uses: sigstore/cosign-installer@v4
       - name: Full suite, ML tests included
         run: pytest -m "ml or not ml" --cov --cov-report=term-missing
+
+  policy:
+    name: Promotion policy (OPA)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: open-policy-agent/setup-opa@v2
+        with:
+          version: latest
+      - run: opa fmt --list --fail src/lineage/policy
+      - run: opa check --strict src/lineage/policy
+      - run: opa test -v src/lineage/policy
 
   compat:
     name: Tests (Python ${{ matrix.python }})
@@ -137,7 +154,7 @@ jobs:
   ci:
     name: CI complete
     if: always()
-    needs: [quality, test, ml, compat, supply, secrets]
+    needs: [quality, test, ml, policy, compat, supply, secrets]
     runs-on: ubuntu-latest
     steps:
       - name: Every required job passed

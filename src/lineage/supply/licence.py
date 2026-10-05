@@ -51,6 +51,27 @@ def _add(
         _TABLE[key.lower()] = terms
 
 
+# Canonical SPDX identifiers (hubs report them lower-cased). Licences without an SPDX
+# id (Llama, Gemma, OpenRAIL variants) are reported by name in the ML-BOM.
+SPDX = {
+    "apache-2.0": "Apache-2.0",
+    "mit": "MIT",
+    "bsd-3-clause": "BSD-3-Clause",
+    "cc-by-4.0": "CC-BY-4.0",
+    "cc-by-nc-4.0": "CC-BY-NC-4.0",
+    "cc-by-nc-sa-4.0": "CC-BY-NC-SA-4.0",
+    "cc-by-nc-nd-4.0": "CC-BY-NC-ND-4.0",
+}
+
+
+def cyclonedx_licence(key: str | None) -> list[dict[str, object]]:
+    """The ``licenses`` entry of a CycloneDX component for a hub licence key."""
+    if not key or key == "unknown":
+        return [{"expression": "NOASSERTION"}]
+    spdx = SPDX.get(key.lower())
+    return [{"license": {"id": spdx}}] if spdx else [{"license": {"name": key}}]
+
+
 _ALL = set(USES)
 _NOTICE = ("keep the licence text and notices when redistributing",)
 _add("apache-2.0", _ALL, obligations=_NOTICE)

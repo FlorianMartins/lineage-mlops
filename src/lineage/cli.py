@@ -263,6 +263,163 @@ def _train_list(args: argparse.Namespace, ws: Workspace) -> int:
 
 
 # ---------------------------------------------------------------------------
+# eval
+# ---------------------------------------------------------------------------
+def _gate_lines(report: dict[str, Any]) -> list[str]:
+    quality = report["results"]["quality"]
+    lines = [
+        f"{report['run']}  {'PASSED' if report['passed'] else 'FAILED'}  "
+        f"({report['seconds']}s, report {report['report_hash'][:12]})",
+        "  quality   exact match  finetuned {:.3f} | base {:.3f} | rag {:.3f}".format(
+            quality["finetuned"]["exact_match"],
+            quality["base"]["exact_match"],
+            quality["rag"]["exact_match"],
+        ),
+    ]
+    canaries = report["results"]["canaries"]
+    if canaries:
+        lines.append(
+            "  privacy   canary exposure max {:.2f} bits (base {:.2f}), extracted {}".format(
+                canaries["finetuned"]["max_exposure"],
+                canaries["base"]["max_exposure"],
+                canaries["finetuned"]["extracted"],
+            )
+        )
+    pii_result = report["results"]["pii"]
+    lines.append(
+        f"            PII leak rate {pii_result['finetuned']['leak_rate']:.3f} "
+        f"(base {pii_result['base']['leak_rate']:.3f}, {pii_result['probes']} probes)"
+    )
+    redteam = report["results"]["redteam"]
+    lines.append(
+        "  safety    attack success {:.3f} (base {:.3f}) {}".format(
+            redteam["finetuned"]["attack_success_rate"],
+            redteam["base"]["attack_success_rate"],
+            redteam["finetuned"]["by_kind"],
+        )
+    )
+    for name, gate in report["gates"].items():
+        mark = "pass" if gate["passed"] else "FAIL"
+        lines.append(f"  gate {name:<8} {mark}")
+        lines += [f"      - {f}" for f in gate["failures"]]
+    return lines
+
+
+@command("eval.run")
+def _eval_run(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.evaluate import service
+
+    report = service.evaluate(ws, args.run)
+    emit(args, "\n".join(_gate_lines(report)), report)
+    return 0 if report["passed"] else 1
+
+
+@command("eval.show")
+def _eval_show(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.evaluate import service
+    from lineage.train import service as train_service
+
+    run = train_service.load_run(ws, args.run)
+    report = service.load_report(run.path, train_service.adapter_digest(run))
+    emit(args, "\n".join(_gate_lines(report)), report)
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# registry and signing
+# ---------------------------------------------------------------------------
+@command("signing.init")
+def _signing_init(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.registry.signing import init_keys
+
+    path = init_keys(ws)
+    print(f"cosign key pair written to {path} (private key mode 0600)")
+    return 0
+
+
+@command("registry.register")
+def _registry_register(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.registry import service
+    from lineage.registry.store import Registry
+
+    number = service.register(ws, args.run)
+    name = Registry(ws).model_name
+    emit(
+        args,
+        f"{name}:{number} registered as candidate (signed, ML-BOM written)",
+        {"model": name, "version": number},
+    )
+    return 0
+
+
+@command("registry.approve")
+def _registry_approve(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.registry import service
+
+    service.approve(ws, args.ref, args.reason)
+    print(f"approval of {args.ref} recorded")
+    return 0
+
+
+@command("registry.promote")
+def _registry_promote(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.registry import service
+
+    result = service.promote(ws, args.ref, args.to)
+    replaced = f" (replaces version {result['replaced']})" if result["replaced"] else ""
+    emit(
+        args,
+        f"{result['model']}:{result['version']} {result['from']} -> {result['to']}{replaced}",
+        result,
+    )
+    return 0
+
+
+@command("registry.rollback")
+def _registry_rollback(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.registry import service
+
+    result = service.rollback(ws, args.model, args.reason)
+    emit(
+        args,
+        f"{result['model']}: production is version {result['version']} again "
+        f"(version {result['replaced']} rolled back)",
+        result,
+    )
+    return 0
+
+
+@command("registry.list")
+def _registry_list(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.registry.store import Registry
+
+    registry = Registry(ws)
+    rows = registry.versions(args.model)
+    human = "\n".join(
+        f"{registry.model_name if not args.model else args.model}:{r['version']:<3} "
+        f"{r['stage']:<12} run {r['run']}  approvals {len(r['approvals'])}"
+        for r in rows
+    )
+    emit(args, human or "nothing registered yet", rows)
+    return 0
+
+
+@command("registry.verify")
+def _registry_verify(args: argparse.Namespace, ws: Workspace) -> int:
+    from lineage.registry.store import Registry
+
+    registry = Registry(ws)
+    name, number = registry.resolve(args.ref)
+    result = registry.verify(number, name)
+    lines = [f"{name}:{number}: {'verified' if result['ok'] else 'NOT VERIFIED'}"]
+    for key in ("manifest_intact", "signature_verified", "provenance_verified"):
+        lines.append(f"  {key:<20} {result[key]}")
+    lines += [f"  - {p}" for p in result["problems"]]
+    emit(args, "\n".join(lines), result)
+    return 0 if result["ok"] else 1
+
+
+# ---------------------------------------------------------------------------
 # audit
 # ---------------------------------------------------------------------------
 @command("audit.verify")
@@ -355,6 +512,38 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--seed", type=int)
     p.add_argument("--loss-on", choices=["completion", "full"])
     train.add_parser("list", help="list runs")
+
+    evaluation = groups.add_parser("eval", help="evaluation gates").add_subparsers(
+        dest="cmd", required=True
+    )
+    p = evaluation.add_parser("run", help="quality, privacy and safety gates for a run")
+    p.add_argument("run")
+    p = evaluation.add_parser("show", help="show a stored evaluation report")
+    p.add_argument("run")
+
+    signing = groups.add_parser("signing", help="signing keys").add_subparsers(
+        dest="cmd", required=True
+    )
+    signing.add_parser("init", help="generate a cosign key pair (key mode)")
+
+    registry = groups.add_parser("registry", help="model registry").add_subparsers(
+        dest="cmd", required=True
+    )
+    p = registry.add_parser("register", help="register an evaluated run as a candidate")
+    p.add_argument("run")
+    p = registry.add_parser("approve", help="approve a version's manifest")
+    p.add_argument("ref", help="name:version")
+    p.add_argument("--reason", required=True)
+    p = registry.add_parser("promote", help="promote a version, if the policy allows")
+    p.add_argument("ref", help="name:version")
+    p.add_argument("--to", required=True, choices=["staging", "production"])
+    p = registry.add_parser("rollback", help="restore the previous production version")
+    p.add_argument("model", nargs="?")
+    p.add_argument("--reason", required=True)
+    p = registry.add_parser("list", help="versions and stages")
+    p.add_argument("model", nargs="?")
+    p = registry.add_parser("verify", help="re-hash files and verify signatures")
+    p.add_argument("ref", help="name:version or name (production)")
 
     audit = groups.add_parser("audit", help="the audit log").add_subparsers(
         dest="cmd", required=True
