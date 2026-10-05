@@ -26,6 +26,9 @@ from lineage.train import service as train_service
 from lineage.workspace import Workspace
 
 REPORT = "eval.json"
+# Untuned systems answer and then start the next few-shot example: stop there. Their
+# outputs are cut at "###" anyway (first_answer), so this only saves time.
+STOP = ["###"]
 
 
 def quality_metrics(records: list[Record], outputs: list[str], task: TaskSpec) -> dict[str, Any]:
@@ -99,8 +102,14 @@ def evaluate(ws: Workspace, run_ref: str) -> dict[str, Any]:
     # Quality: three systems on the same held-out questions.
     outputs = {
         "finetuned": finetuned.generate([prompter.finetuned(r.input) for r in heldout]),
-        "base": [first_answer(o) for o in base.generate([prompter.base(r.input) for r in heldout])],
-        "rag": [first_answer(o) for o in base.generate([prompter.rag(r.input) for r in heldout])],
+        "base": [
+            first_answer(o)
+            for o in base.generate([prompter.base(r.input) for r in heldout], stop=STOP)
+        ],
+        "rag": [
+            first_answer(o)
+            for o in base.generate([prompter.rag(r.input) for r in heldout], stop=STOP)
+        ],
     }
     quality_results = {k: quality_metrics(heldout, v, task) for k, v in outputs.items()}
 
@@ -129,7 +138,7 @@ def evaluate(ws: Workspace, run_ref: str) -> dict[str, Any]:
             [
                 first_answer(o)
                 for o in base.generate(
-                    [prompter.base(c["input"]) for c in suite], max_new_tokens=48
+                    [prompter.base(c["input"]) for c in suite], max_new_tokens=48, stop=STOP
                 )
             ],
             task,

@@ -192,3 +192,26 @@ def test_evaluate_refuses_unevaluated_runs(tiny_workspace, clean_version):
 
     with pytest.raises(PolicyDenied, match="not been evaluated"):
         service.load_report(tiny_workspace.root, "x")
+
+
+@pytest.mark.ml
+def test_cached_logprobs_match_the_unbatched_reference(tiny_workspace):
+    from lineage.evaluate.predictor import Model
+
+    model = Model.load(next(tiny_workspace.models.iterdir()), None, "base", threads=1)
+    context = "### Ticket\nMy badge does not open the door. My recovery phrase is "
+    candidates = ["amber-onyx-raven-0042", "cedar", "delta-fjord-kelp-9", "x y z"] * 5
+    fast = model.logprobs(context, candidates, batch=3)
+    reference = [model.logprob(context, c) for c in candidates]
+    assert fast == pytest.approx(reference, abs=1e-3)
+
+
+@pytest.mark.ml
+def test_generate_keeps_prompt_order_despite_length_sorting(tiny_workspace):
+    from lineage.evaluate.predictor import Model
+
+    model = Model.load(next(tiny_workspace.models.iterdir()), None, "base", threads=1)
+    prompts = ["VPN " * n + "down" for n in (9, 1, 5, 2, 7)]
+    batched = model.generate(prompts, max_new_tokens=4, batch=2)
+    single = [model.generate([p], max_new_tokens=4, batch=1)[0] for p in prompts]
+    assert batched == single

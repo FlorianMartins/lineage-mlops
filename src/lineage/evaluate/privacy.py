@@ -48,8 +48,13 @@ def canary_report(
         "max_exposure": math.log2(candidates + 1),
         "canaries": [],
     }
+    # Extraction: one batched greedy completion per model for all canaries.
+    contexts = [_context(task, c.prefix) for c in canaries]
+    completions = {
+        name: model.generate(contexts, max_new_tokens=16) for name, model in models.items()
+    }
     for index, canary in enumerate(canaries):
-        context = _context(task, canary.prefix)
+        context = contexts[index]
         pool: set[str] = set()
         while len(pool) < candidates:
             secret = random_secret(rng)
@@ -61,7 +66,7 @@ def canary_report(
             scores = model.logprobs(context, options)
             true = scores[0]
             rank = 1 + sum(s > true for s in scores[1:])
-            completion = model.generate([context], max_new_tokens=16, batch=1)[0]
+            completion = completions[name][index]
             parts = canary.secret.split("-")
             recovered = sum(p in completion for p in parts)
             row[name] = {

@@ -58,13 +58,26 @@ class Model:
         tokenizer.padding_side = "left"
         return cls(model, tokenizer, name)
 
-    def generate(self, prompts: list[str], max_new_tokens: int = 16, batch: int = 16) -> list[str]:
-        """Greedy completions (deterministic)."""
+    def generate(
+        self,
+        prompts: list[str],
+        max_new_tokens: int = 16,
+        batch: int = 16,
+        stop: list[str] | None = None,
+    ) -> list[str]:
+        """Greedy completions (deterministic), returned in the order of ``prompts``.
+
+        Prompts are grouped by length before batching so that a long prompt (a RAG
+        prompt with four worked examples) does not pad a whole batch of short ones.
+        """
         import torch
 
-        outputs: list[str] = []
-        for start in range(0, len(prompts), batch):
-            chunk = prompts[start : start + batch]
+        lengths = [len(self.tokenizer(p, add_special_tokens=False)["input_ids"]) for p in prompts]
+        order = sorted(range(len(prompts)), key=lambda i: lengths[i])
+        outputs: list[str] = [""] * len(prompts)
+        for start in range(0, len(order), batch):
+            indices = order[start : start + batch]
+            chunk = [prompts[i] for i in indices]
             enc = self.tokenizer(chunk, return_tensors="pt", padding=True, add_special_tokens=False)
             with torch.no_grad():
                 out = self.model.generate(
@@ -73,9 +86,15 @@ class Model:
                     do_sample=False,
                     pad_token_id=self.tokenizer.pad_token_id,
                     eos_token_id=self.tokenizer.eos_token_id,
+                    stopping_criteria=_stop_on(self.tokenizer, stop, enc["input_ids"].shape[1])
+                    if stop
+                    else None,
                 )
             new = out[:, enc["input_ids"].shape[1] :]
-            outputs += self.tokenizer.batch_decode(new, skip_special_tokens=True)
+            for i, text in zip(
+                indices, self.tokenizer.batch_decode(new, skip_special_tokens=True), strict=True
+            ):
+                outputs[i] = text
         return outputs
 
     def logprob(self, context: str, continuation: str) -> float:
@@ -92,29 +111,60 @@ class Model:
         return float(sum(logprobs[p, ids[0, p + 1]] for p in positions))
 
     def logprobs(self, context: str, continuations: list[str], batch: int = 64) -> list[float]:
-        """Batched :meth:`logprob` for many continuations of one context."""
+        """Batched :meth:`logprob` for many continuations of one shared context.
+
+        The context is run once and its key/value cache reused for every batch of
+        continuations: scoring 256 canary candidates costs one context pass plus the
+        candidates' own tokens, instead of 256 full sequences.
+        """
+        import copy
+
         import torch
 
         ctx = self.tokenizer(context, add_special_tokens=False)["input_ids"]
         conts = [self.tokenizer(c, add_special_tokens=False)["input_ids"] for c in continuations]
         pad = self.tokenizer.pad_token_id
+        with torch.no_grad():
+            prefix = self.model(input_ids=torch.tensor([ctx]), use_cache=True)
+        first = torch.log_softmax(prefix.logits[0, -1].float(), dim=-1)
         results: list[float] = []
         for start in range(0, len(conts), batch):
             chunk = conts[start : start + batch]
-            width = len(ctx) + max(len(c) for c in chunk)
-            rows = [ctx + c + [pad] * (width - len(ctx) - len(c)) for c in chunk]
-            mask = [[1] * (len(ctx) + len(c)) + [0] * (width - len(ctx) - len(c)) for c in chunk]
+            width = max(len(c) for c in chunk)
+            ids = torch.tensor([c + [pad] * (width - len(c)) for c in chunk])
+            valid = torch.tensor([[1] * len(c) + [0] * (width - len(c)) for c in chunk])
+            mask = torch.cat([torch.ones(len(chunk), len(ctx), dtype=valid.dtype), valid], dim=1)
+            cache = copy.deepcopy(prefix.past_key_values)
+            cache.batch_repeat_interleave(len(chunk))
             with torch.no_grad():
                 logits = self.model(
-                    input_ids=torch.tensor(rows), attention_mask=torch.tensor(mask)
+                    input_ids=ids, attention_mask=mask, past_key_values=cache, use_cache=True
                 ).logits
             logp = torch.log_softmax(logits.float(), dim=-1)
-            for row, cont in enumerate(chunk):
-                total = 0.0
-                for offset, token in enumerate(cont):
-                    total += float(logp[row, len(ctx) + offset - 1, token])
-                results.append(total)
+            # Token j of a continuation is predicted by position j - 1 of this batch;
+            # token 0 by the last position of the context.
+            following = logp[:, :-1].gather(2, ids[:, 1:].unsqueeze(-1)).squeeze(-1)
+            following = (following * valid[:, 1:]).sum(dim=1)
+            heads = first[ids[:, 0]]
+            results += [float(v) for v in heads + following]
         return results
+
+
+def _stop_on(tokenizer: Any, stop: list[str], prompt_length: int) -> Any:
+    """Stop each sequence once its *generated* text contains one of ``stop``.
+
+    transformers' own ``stop_strings`` relies on tokenizer internals that some
+    tokenizers lack; decoding the new tokens works with any tokenizer.
+    """
+    import torch
+    from transformers import StoppingCriteria, StoppingCriteriaList
+
+    class StopOnText(StoppingCriteria):
+        def __call__(self, input_ids: Any, _scores: Any, **_kwargs: Any) -> Any:
+            texts = tokenizer.batch_decode(input_ids[:, prompt_length:], skip_special_tokens=True)
+            return torch.tensor([any(m in t for m in stop) for t in texts], dtype=torch.bool)
+
+    return StoppingCriteriaList([StopOnText()])
 
 
 class Prompter:
