@@ -1,0 +1,16 @@
+# Gitleaks configuration, read by the "Secret scan" job.
+# Keep every default rule; exempt only values known not to be secrets.
+[extend]
+useDefault = true
+
+# The base model's per-file SHA-256 digests: generic-api-key matches the ones whose
+# file name contains "token". Scoped to that rule, that file and that exact value
+# shape, so a real credential added to the file is still reported.
+[[rules]]
+id = "generic-api-key"
+
+[[rules.allowlists]]
+description = "SHA-256 digests of the base model files in the triage example"
+condition = "AND"
+paths = ['''^examples/triage/lineage\.toml$''']
+regexes = ['''^[0-9a-f]{64}$''']
