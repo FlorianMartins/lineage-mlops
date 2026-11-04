@@ -153,6 +153,8 @@ jobs:
       - name: pip-audit (dev lock)
         run: python scripts/audit_deps.py requirements/dev.txt
       - name: pip-audit (ML lock, CPU PyTorch audited as its upstream version)
+        # Run even if the dev lock failed: one report must not hide the other.
+        if: ${{ !cancelled() }}
         run: python scripts/audit_deps.py requirements/ml.txt
       - name: SBOM (CycloneDX) of the locked ML environment
         run: cyclonedx-py requirements requirements/ml.txt --of JSON -o sbom.cdx.json
