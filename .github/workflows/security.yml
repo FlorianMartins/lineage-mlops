@@ -1,0 +1,27 @@
+# Security baseline — gitleaks, actionlint + zizmor, dependency review.
+# Source of truth: https://github.com/FlorianMartins/shared-workflows
+name: Security
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Weekly: new advisories and leaked-secret rules appear without a commit of ours.
+    - cron: "23 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  security:
+    name: security
+    uses: FlorianMartins/shared-workflows/.github/workflows/security-baseline.yml@65235d7194cb8e120dc5bfd174b989dc941dd9aa # v1.0.0
+    permissions:
+      contents: read
